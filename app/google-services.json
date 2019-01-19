@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "345974458538",
+    "firebase_url": "https://donlate-66efb.firebaseio.com",
+    "project_id": "donlate-66efb",
+    "storage_bucket": "donlate-66efb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345974458538:android:52c728d7db9edf24",
+        "android_client_info": {
+          "package_name": "com.joe.donlate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "345974458538-nu4u6cpmbieapvom5bbku736h1pls7l8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnyKd2P5kYbKI0gD5MyeXU0ZcYcgtBmeI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,16 @@
+package com.joe.donlate.view
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+
+open abstract class BaseActivity<T: ViewDataBinding> : AppCompatActivity() {
+    lateinit var viewDataBinding: T
+    abstract val layoutResource: Int
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewDataBinding = DataBindingUtil.setContentView(this, layoutResource)
+    }
+}

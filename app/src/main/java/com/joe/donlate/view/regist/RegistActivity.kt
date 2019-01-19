@@ -58,7 +58,7 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
         } else {
             Log.e("tag", (getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number)
         }
-        
+
         viewDataBinding.viewModel = viewModel
         viewDataBinding.setLifecycleOwner(this)
     }

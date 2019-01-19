@@ -5,6 +5,9 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.storage.StorageReference
 import com.joe.donlate.model.RegistRepository
 import com.joe.donlate.view_model.BaseViewModel
 import io.reactivex.Single
@@ -33,10 +36,41 @@ class RegistViewModel(private val repository: RegistRepository) : BaseViewModel(
             .observeOn(AndroidSchedulers.mainThread())
 
 
-    private fun registImage(image: Bitmap) =
-        repository.registImage(image)
+    private fun registImage(phone: String, image: Bitmap?) =
+        repository.registImage(phone, image)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+
+    fun regist(phone: String, name: String) {
+        addDisposable(Single.zip(
+            registUser(phone, name)
+                .doOnError {
+                    it.printStackTrace()
+                    Log.e("tag", "registUserError")
+                },
+            registImage(phone, image.value)
+                .doOnError {
+                    it.printStackTrace()
+                    Log.e("tag", "registImageError")
+                },
+            BiFunction<Task<DocumentReference>, StorageReference, Pair<Task<DocumentReference>, StorageReference>> { task, storage ->
+                Pair(task, storage)
+            }
+        ).subscribe({
+            Log.e("tag", "subscribe")
+            it.first.addOnSuccessListener {
+                Log.e("tag", "addOnSuccessListener")
+            }
+            it.first.addOnFailureListener {
+                it.printStackTrace()
+                Log.e("tag", "addOnFailureListener")
+            }
+        }, {
+            it.printStackTrace()
+            Log.e("Tag", "throw")
+        })
+        )
+    }
 
     fun setImageView(bitmap: Bitmap) {
         _image.value = bitmap
@@ -48,21 +82,5 @@ class RegistViewModel(private val repository: RegistRepository) : BaseViewModel(
 
     fun onImageClick(view: View) {
         _imageClick.value = ""
-    }
-
-    fun regist(phone: String, name: String) {
-        addDisposable(repository.registUser(phone, name)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ task ->
-                task.addOnSuccessListener {
-                    Log.e("tag", "${it.parent.id} ${it.id}")
-                }
-                task.addOnFailureListener {
-                    it.printStackTrace()
-                }
-            }, {
-                it.printStackTrace()
-            })
-        )
     }
 }

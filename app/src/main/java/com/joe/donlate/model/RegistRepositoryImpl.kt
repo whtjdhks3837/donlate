@@ -3,17 +3,29 @@ package com.joe.donlate.model
 import android.graphics.Bitmap
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentReference
-import com.joe.donlate.util.firebasesStore
+import com.google.firebase.storage.StorageReference
+import com.joe.donlate.util.firebaseDatabase
+import com.joe.donlate.util.firebaseStorage
+import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
+import java.lang.Exception
 
 class RegistRepositoryImpl : RegistRepository {
     override fun registUser(phone: String, name: String): Single<Task<DocumentReference>> =
         Single.just(
-            firebasesStore.collection("user")
+            firebaseDatabase.collection("user")
+                .document(phone)
+                .parent
                 .add(mapOf("phone" to phone, "name" to name))
         )
+//        Single.error(Exception())
 
-    override fun registImage(image: Bitmap): Single<Any> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun registImage(phone: String, image: Bitmap?): Single<StorageReference> {
+        return image?.let {
+            return Single.just(
+                firebaseStorage.reference.child("images/$phone.jpg")
+            )
+        } ?: Single.just(firebaseStorage.reference)
     }
 }

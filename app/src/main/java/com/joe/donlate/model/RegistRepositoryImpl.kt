@@ -7,10 +7,14 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.storage.UploadTask
 import com.joe.donlate.util.firebaseDatabase
 import com.joe.donlate.util.firebaseStorage
+import durdinapps.rxfirebase2.RxFirebaseDatabase
+import durdinapps.rxfirebase2.RxFirebaseStorage
+import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.Maybe
 import io.reactivex.Single
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.lang.Exception
 
 class RegistRepositoryImpl : RegistRepository {
     override fun registUser(uuid: String, name: String): Single<Task<DocumentReference>> =

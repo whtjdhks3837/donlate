@@ -1,4 +1,4 @@
-package com.joe.donlate.view_model.regist
+package com.joe.donlate.view_model.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

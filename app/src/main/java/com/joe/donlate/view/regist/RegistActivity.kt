@@ -1,27 +1,22 @@
 package com.joe.donlate.view.regist
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityRegistBinding
 import com.joe.donlate.util.REQUEST_IMAGE_CODE
-import com.joe.donlate.util.REQUEST_PHONE_STATE_CODE
 import com.joe.donlate.util.Utils
 import com.joe.donlate.util.toast
 import com.joe.donlate.view.BaseActivity
-import com.joe.donlate.view_model.regist.RegistViewModel
-import com.joe.donlate.view_model.regist.RegistViewModelFactory
+import com.joe.donlate.view_model.profile.RegistViewModel
+import com.joe.donlate.view_model.profile.RegistViewModelFactory
 import org.koin.android.ext.android.get
 
 class RegistActivity : BaseActivity<ActivityRegistBinding>() {
@@ -33,7 +28,6 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        registObserve()
         errorObserve()
         registClickObserve()
         imageClickObserve()
@@ -56,20 +50,6 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
         })
     }
 
-    private fun registObserve() {
-        viewModel.regist.observe(this, Observer { complete ->
-            if ((complete[0] && complete[1]) || (complete[0] && !complete[1])) {
-                Log.e("tag", "sucesssssss")
-                viewModel.setProgress(false)
-                viewModel.setInitRegistState()
-            } else if (!complete[0] && complete[1]) {
-                Log.e("tag", "faillllllll")
-                viewModel.setProgress(false)
-                viewModel.setInitRegistState()
-            }
-        })
-    }
-
     private fun errorObserve() {
         viewModel.error.observe(this, Observer {
             viewModel.setProgress(false)
@@ -77,10 +57,14 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
         })
     }
 
+    private fun userObserve() {
+        
+    }
+
     private fun regist(name: String) {
         if (registValidate(name)) {
             viewModel.setProgress(true)
-            viewModel.regist(Utils.Uuid.getUuid(this), viewDataBinding.nameEdit.text.toString())
+            //viewModel.regist(Utils.Uuid.getUuid(this), viewDataBinding.nameEdit.text.toString())
         }
     }
 

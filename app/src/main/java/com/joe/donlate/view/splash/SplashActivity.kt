@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivitySplashBinding
 import com.joe.donlate.util.Utils
+import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.util.toast
 import com.joe.donlate.view.BaseActivity
 import com.joe.donlate.view.regist.RegistActivity
@@ -30,7 +31,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         userObserve()
         userNotFoundObserve()
         errorObserve()
-        getMyAccount(Utils.Uuid.getUuid(this))
+        getMyAccount(UuidUtil.getUuid(this))
 
         viewDataBinding.viewModel = viewModel
         viewDataBinding.setLifecycleOwner(this)
@@ -38,7 +39,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     private fun getMyAccount(uuid: String) {
         viewModel.setProgress(true)
-        viewModel.getMyAccount("$uuid@donlate.com")
+        viewModel.getMyAccount(uuid)
     }
 
     private fun userObserve() {

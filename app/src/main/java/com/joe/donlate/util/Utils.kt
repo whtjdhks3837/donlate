@@ -33,10 +33,4 @@ object Utils {
 
     private fun getTelephonyManager(context: Context) =
         context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-
-    object Uuid {
-        @SuppressLint("HardwareIds")
-        fun getUuid(context: Context) =
-            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)!!
-    }
 }

@@ -58,7 +58,7 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
     }
 
     private fun userObserve() {
-        
+
     }
 
     private fun regist(name: String) {

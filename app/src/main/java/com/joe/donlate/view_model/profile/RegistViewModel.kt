@@ -35,6 +35,18 @@ class RegistViewModel(private val repository: RegistRepository) : BaseViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
+    fun getUser(uuid: String) {
+        addDisposable(repository.getUser(uuid)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                
+            }, {
+
+            })
+        )
+    }
+
     fun setImageView(bitmap: Bitmap) {
         _image.value = bitmap
     }
@@ -49,9 +61,5 @@ class RegistViewModel(private val repository: RegistRepository) : BaseViewModel(
 
     fun setProgress(isLoading: Boolean) {
         _progress.value = isLoading
-    }
-
-    fun setInitRegistState() {
-        _regist.value!!.clear()
     }
 }

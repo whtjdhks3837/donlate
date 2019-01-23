@@ -11,7 +11,7 @@ class SplashRepositoryImpl : SplashRepository {
     override fun getMyAccount(uuid: String): Single<DocumentSnapshot> =
         Single.create { emitter ->
             firebaseDatabase.collection("users")
-                .document("doc")
+                .document(uuid)
                 .get()
                 .addOnSuccessListener {
                     emitter.onSuccess(it)

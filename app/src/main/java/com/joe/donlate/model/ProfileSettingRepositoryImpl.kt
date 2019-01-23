@@ -11,8 +11,8 @@ import io.reactivex.Single
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
-class RegistRepositoryImpl : RegistRepository {
-    override fun registUser(uuid: String, name: String): Single<DocumentReference> =
+class ProfileSettingRepositoryImpl : ProfileSettingRepository {
+    override fun updateUser(uuid: String, name: String): Single<DocumentReference> =
         Single.create { emitter ->
             firebaseDatabase.collection("user")
                 .document(uuid)
@@ -26,7 +26,7 @@ class RegistRepositoryImpl : RegistRepository {
                 }
         }
 
-    override fun registImage(uuid: String, image: Bitmap?): Single<UploadTask.TaskSnapshot> =
+    override fun updateImage(uuid: String, image: Bitmap?): Single<UploadTask.TaskSnapshot> =
         image?.let { bitmap ->
             val bos = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos)
@@ -43,12 +43,12 @@ class RegistRepositoryImpl : RegistRepository {
                     }
             }
         } ?: Single.create { emitter ->
-            emitter.onSuccess(firebaseStorage.reference.putFile(Uri.EMPTY).snapshot)
+            emitter.onError(Exception())
         }
 
-    override fun getUser(uuid: String): Single<DocumentSnapshot> =
+    override fun getMyAccount(uuid: String): Single<DocumentSnapshot> =
         Single.create { emitter ->
-            firebaseDatabase.collection("user")
+            firebaseDatabase.collection("users")
                 .document(uuid)
                 .get()
                 .addOnSuccessListener {

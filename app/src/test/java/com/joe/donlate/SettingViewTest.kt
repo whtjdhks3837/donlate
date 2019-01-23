@@ -1,9 +1,7 @@
 package com.joe.donlate
 
-import androidx.lifecycle.Observer
 import com.google.firebase.firestore.FirebaseFirestore
-import com.joe.donlate.util.firebaseDatabase
-import com.joe.donlate.view.regist.RegistActivity
+import com.joe.donlate.view.profile.ProfileSettingActivity
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -14,11 +12,11 @@ import org.mockito.Mockito
 class SettingViewTest {
     private val firebaseDatabase = FirebaseFirestore.getInstance()
 
-    private lateinit var view: RegistActivity
+    private lateinit var view: ProfileSettingActivity
 
     @Before
     fun setUp() {
-        view = RegistActivity()
+        view = ProfileSettingActivity()
     }
 
     @Test
@@ -31,6 +29,6 @@ class SettingViewTest {
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-        Mockito.mock(RegistActivity::class.java)
+        Mockito.mock(ProfileSettingActivity::class.java)
     }
 }

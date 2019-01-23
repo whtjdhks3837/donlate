@@ -1,4 +1,4 @@
-package com.joe.donlate.view.regist
+package com.joe.donlate.view.profile
 
 import android.app.Activity
 import android.content.Intent
@@ -6,38 +6,43 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
-import com.joe.donlate.databinding.ActivityRegistBinding
+import com.joe.donlate.databinding.ActivityProfileSettingBinding
 import com.joe.donlate.util.REQUEST_IMAGE_CODE
-import com.joe.donlate.util.Utils
+import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.util.toast
 import com.joe.donlate.view.BaseActivity
-import com.joe.donlate.view_model.profile.RegistViewModel
-import com.joe.donlate.view_model.profile.RegistViewModelFactory
+import com.joe.donlate.view.splash.SplashActivity
+import com.joe.donlate.view_model.profile.ProfileSettingViewModel
+import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
 import org.koin.android.ext.android.get
 
-class RegistActivity : BaseActivity<ActivityRegistBinding>() {
-    override val layoutResource: Int = R.layout.activity_regist
-    private val viewModel: RegistViewModel by lazy {
-        ViewModelProviders.of(this, RegistViewModelFactory(get())).get(RegistViewModel::class.java)
+class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
+    override val layoutResource: Int = R.layout.activity_profile_setting
+    private val viewModel: ProfileSettingViewModel by lazy {
+        ViewModelProviders.of(this, ProfileSettingViewModelFactory(get())).get(ProfileSettingViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        userObserve()
         errorObserve()
         registClickObserve()
         imageClickObserve()
+        startMettingsActivityObserve()
+
         viewDataBinding.viewModel = viewModel
         viewDataBinding.setLifecycleOwner(this)
+
+        getMyAccount()
     }
 
     private fun registClickObserve() {
-        viewModel.registClick.observe(this, Observer {
-            regist(viewDataBinding.nameEdit.text.toString())
+        viewModel.startMeetingsClick.observe(this, Observer {
+            checkAccount(UuidUtil.getUuid(this))
         })
     }
 
@@ -58,14 +63,29 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
     }
 
     private fun userObserve() {
-
+        viewModel.user.observe(this, Observer {
+            viewModel.setProgress(false)
+            viewDataBinding.nameEdit.setText(it["nickname"].toString())
+            //Todo : set image
+        })
     }
 
-    private fun regist(name: String) {
-        if (registValidate(name)) {
-            viewModel.setProgress(true)
-            //viewModel.regist(Utils.Uuid.getUuid(this), viewDataBinding.nameEdit.text.toString())
-        }
+    private fun startMettingsActivityObserve() {
+        viewModel.startMeetingsActivity.observe(this, Observer {
+            viewModel.setProgress(false)
+            startActivity(Intent(this, SplashActivity::class.java))
+            finish()
+        })
+    }
+
+    private fun getMyAccount() {
+        viewModel.setProgress(true)
+        viewModel.getMyAccount(UuidUtil.getUuid(this))
+    }
+
+    private fun checkAccount(uuid: String) {
+        viewModel.setProgress(true)
+        viewModel.checkAccount(uuid)
     }
 
     private fun registValidate(name: String): Boolean {
@@ -86,7 +106,8 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
             data?.data?.let { _ ->
                 val bitmap = getResizeBitmap(data.data!!)
                 bitmap?.let {
-                    viewModel.setImageView(it)
+                    viewModel.setProgress(true)
+                    viewModel.updateImage(UuidUtil.getUuid(this), it)
                 } ?: toast(this, "이미지를 불러오지 못했습니다.")
             } ?: toast(this, "이미지를 불러오지 못했습니다.")
         }
@@ -100,7 +121,7 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
     }
     /*private fun getPhoneNumber() {
         Utils.getPhoneNumber(this, { phone ->
-            viewModel.regist(phone, viewDataBinding.nameEdit.text.toString())
+            viewModel.checkAccount(phone, viewDataBinding.nameEdit.text.toString())
         }, {
             ActivityCompat.requestPermissions(
                 this,
@@ -115,7 +136,7 @@ class RegistActivity : BaseActivity<ActivityRegistBinding>() {
         if (requestCode == REQUEST_PHONE_STATE_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Utils.getPhoneNumber(this, { phone ->
-                    viewModel.regist(phone, viewDataBinding.nameEdit.text.toString())
+                    viewModel.checkAccount(phone, viewDataBinding.nameEdit.text.toString())
                 }, {})
             } else {
                 toast(this, "권한체크 해주삼ㅠ")

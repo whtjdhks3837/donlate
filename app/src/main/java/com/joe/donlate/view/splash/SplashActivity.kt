@@ -2,17 +2,14 @@ package com.joe.donlate.view.splash
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivitySplashBinding
-import com.joe.donlate.util.Utils
 import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.util.toast
 import com.joe.donlate.view.BaseActivity
-import com.joe.donlate.view.regist.RegistActivity
+import com.joe.donlate.view.profile.ProfileSettingActivity
 import com.joe.donlate.view_model.splash.SplashViewModel
 import com.joe.donlate.view_model.splash.SplashViewModelFactory
 import org.koin.android.ext.android.get
@@ -51,7 +48,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private fun userNotFoundObserve() {
         viewModel.userNotFound.observe(this, Observer {
             viewModel.setProgress(false)
-            startActivity(Intent(this, RegistActivity::class.java))
+            startActivity(Intent(this, ProfileSettingActivity::class.java))
             finish()
         })
     }

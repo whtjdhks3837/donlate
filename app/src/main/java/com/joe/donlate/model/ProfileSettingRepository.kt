@@ -9,8 +9,8 @@ import com.google.firebase.storage.UploadTask
 import io.reactivex.Maybe
 import io.reactivex.Single
 
-interface RegistRepository {
-    fun registUser(uuid: String, name: String): Single<DocumentReference>
-    fun registImage(uuid: String, image: Bitmap?): Single<UploadTask.TaskSnapshot>
-    fun getUser(uuid: String): Single<DocumentSnapshot>
+interface ProfileSettingRepository {
+    fun updateUser(uuid: String, name: String): Single<DocumentReference>
+    fun updateImage(uuid: String, image: Bitmap?): Single<UploadTask.TaskSnapshot>
+    fun getMyAccount(uuid: String): Single<DocumentSnapshot>
 }

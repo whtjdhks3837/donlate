@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.joe.donlate.model.ProfileSettingRepository
 import com.joe.donlate.util.IMAGE_UPLOAD_ERROR_MESSAGE
+import com.joe.donlate.util.NICKNAME_UPDATE_ERROR_MESSAGE
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.util.USER_REGIST_FAILURE
 import com.joe.donlate.view_model.BaseViewModel
@@ -14,25 +15,41 @@ import io.reactivex.schedulers.Schedulers
 
 class ProfileSettingViewModel(private val repository: ProfileSettingRepository) : BaseViewModel() {
     private val _user = MutableLiveData<Map<String, Any>>()
+    private val _updateNicknameClick = MutableLiveData<Any>()
+    private val _nickname = MutableLiveData<Any>()
     private val _startMeetingsClick = MutableLiveData<Any>()
     private val _imageClick = MutableLiveData<Any>()
     private val _image = MutableLiveData<Bitmap>()
     private val _startMeetingsActivity = MutableLiveData<Any>()
     private val _error = MutableLiveData<String>()
     private val _progress = MutableLiveData<Boolean>()
+    private val _clickable = MutableLiveData<Boolean>()
 
     val user: LiveData<Map<String, Any>> = _user
+    val updateNicknameClick: LiveData<Any> = _updateNicknameClick
+    val nickname: LiveData<Any> = _nickname
     val startMeetingsClick: LiveData<Any> = _startMeetingsClick
     val imageClick: LiveData<Any> = _imageClick
     val image: LiveData<Bitmap> = _image
     val startMeetingsActivity: LiveData<Any> = _startMeetingsActivity
     val error: LiveData<String> = _error
     val progress: LiveData<Boolean> = _progress
+    val clickable: LiveData<Boolean> = _clickable
 
-    private fun updateUser(uuid: String, name: String) =
-        repository.updateUser(uuid, name)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+    fun updateNickname(uuid: String, name: String) {
+        addDisposable(
+            repository.updateNickname(uuid, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({},
+                    {
+                        it.printStackTrace()
+                        _error.value = NICKNAME_UPDATE_ERROR_MESSAGE
+                    }, {
+                        _nickname.value = ""
+                    })
+        )
+    }
 
     fun updateImage(uuid: String, image: Bitmap) {
         addDisposable(
@@ -40,10 +57,12 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    setProgress(false)
+                    _progress.value = false
+                    _clickable.value = true
                     _image.value = image
                 }, {
                     it.printStackTrace()
+                    _clickable.value = true
                     _error.value = IMAGE_UPLOAD_ERROR_MESSAGE
                 })
         )
@@ -58,11 +77,13 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
         addDisposable(
             getAccount(uuid)
                 .subscribe({
+                    _clickable.value = true
                     it.data?.let { data ->
                         _user.value = data
                     } ?: setProgress(false)
                 }, {
                     it.printStackTrace()
+                    _clickable.value = true
                     _error.value = SERVER_ERROR_MESSAGE
                 })
         )
@@ -72,11 +93,13 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
         addDisposable(
             getAccount(uuid)
                 .subscribe({
+                    _clickable.value = true
                     it.data?.let { _ ->
                         _startMeetingsActivity.value = ""
                     } ?: userNotFound()
                 }, {
                     it.printStackTrace()
+                    _clickable.value = true
                     _error.value = SERVER_ERROR_MESSAGE
                 })
         )
@@ -87,14 +110,25 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     }
 
     fun onStartMeetingsClick(view: View) {
+        _clickable.value = false
         _startMeetingsClick.value = ""
     }
 
     fun onImageClick(view: View) {
+        _clickable.value = false
         _imageClick.value = ""
+    }
+
+    fun onUpdateNicknameClick(view: View) {
+        _clickable.value = false
+        _updateNicknameClick.value = ""
     }
 
     fun setProgress(isLoading: Boolean) {
         _progress.value = isLoading
+    }
+
+    fun setClickable(isClickable: Boolean) {
+        _clickable.value = isClickable
     }
 }

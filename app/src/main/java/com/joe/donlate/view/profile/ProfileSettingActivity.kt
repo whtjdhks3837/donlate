@@ -10,9 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityProfileSettingBinding
-import com.joe.donlate.util.REQUEST_IMAGE_CODE
-import com.joe.donlate.util.UuidUtil
-import com.joe.donlate.util.toast
+import com.joe.donlate.util.*
 import com.joe.donlate.view.BaseActivity
 import com.joe.donlate.view.splash.SplashActivity
 import com.joe.donlate.view_model.profile.ProfileSettingViewModel
@@ -28,19 +26,24 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        init()
+        getMyAccount()
+    }
+
+    private fun init() {
         userObserve()
+        nicknameObserve()
         errorObserve()
-        registClickObserve()
+        startMeetingsClickObserve()
         imageClickObserve()
+        updateNicknameClickObserve()
         startMettingsActivityObserve()
 
         viewDataBinding.viewModel = viewModel
         viewDataBinding.setLifecycleOwner(this)
-
-        getMyAccount()
     }
 
-    private fun registClickObserve() {
+    private fun startMeetingsClickObserve() {
         viewModel.startMeetingsClick.observe(this, Observer {
             checkAccount(UuidUtil.getUuid(this))
         })
@@ -55,6 +58,31 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
         })
     }
 
+    private fun updateNicknameClickObserve() {
+        viewModel.updateNicknameClick.observe(this, Observer {
+            val name = viewDataBinding.nameEdit.text.toString()
+            if (nicknameValidate(name)) {
+                viewModel.setProgress(true)
+                viewModel.updateNickname(UuidUtil.getUuid(this), name)
+            } else {
+                // Todo : 버튼 안눌리는 것 고칠 것
+                viewModel.setClickable(true)
+            }
+        })
+    }
+
+    private fun nicknameValidate(name: String): Boolean {
+        if (name == "") {
+            toast(this, "이름이 공백입니다.")
+            return false
+        }
+        if (name.length !in 2..6) {
+            toast(this, "2자에서 6자 사이로 입력해주세요..")
+            return false
+        }
+        return true
+    }
+
     private fun errorObserve() {
         viewModel.error.observe(this, Observer {
             viewModel.setProgress(false)
@@ -65,8 +93,16 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun userObserve() {
         viewModel.user.observe(this, Observer {
             viewModel.setProgress(false)
-            viewDataBinding.nameEdit.setText(it["nickname"].toString())
-            //Todo : set image
+            viewDataBinding.nameEdit.setText(it["name"].toString())
+            GlideUtil.loadFirebaseStorage(this, viewDataBinding.profileImage)
+        })
+    }
+
+
+    private fun nicknameObserve() {
+        viewModel.nickname.observe(this, Observer {
+            viewModel.setProgress(false)
+            toast(this, UPDATE_MESSAGE)
         })
     }
 
@@ -86,18 +122,6 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun checkAccount(uuid: String) {
         viewModel.setProgress(true)
         viewModel.checkAccount(uuid)
-    }
-
-    private fun registValidate(name: String): Boolean {
-        if (name == "") {
-            toast(this, "이름이 공백입니다.")
-            return false
-        }
-        if (name.length !in 2..6) {
-            toast(this, "2자에서 6자 사이로 입력해주세요..")
-            return false
-        }
-        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

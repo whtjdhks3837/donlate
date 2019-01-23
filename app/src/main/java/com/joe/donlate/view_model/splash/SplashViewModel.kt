@@ -7,7 +7,6 @@ import com.joe.donlate.data.User
 import com.joe.donlate.model.SplashRepository
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.view_model.BaseViewModel
-import durdinapps.rxfirebase2.RxFirestore
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

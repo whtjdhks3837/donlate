@@ -10,7 +10,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface ProfileSettingRepository {
-    fun updateUser(uuid: String, name: String): Single<DocumentReference>
+    fun updateNickname(uuid: String, name: String): Maybe<Any>
     fun updateImage(uuid: String, image: Bitmap?): Single<UploadTask.TaskSnapshot>
     fun getMyAccount(uuid: String): Single<DocumentSnapshot>
 }

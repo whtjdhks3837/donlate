@@ -7,21 +7,22 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.storage.UploadTask
 import com.joe.donlate.util.firebaseDatabase
 import com.joe.donlate.util.firebaseStorage
+import io.reactivex.Maybe
 import io.reactivex.Single
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 class ProfileSettingRepositoryImpl : ProfileSettingRepository {
-    override fun updateUser(uuid: String, name: String): Single<DocumentReference> =
-        Single.create { emitter ->
-            firebaseDatabase.collection("user")
+    override fun updateNickname(uuid: String, name: String): Maybe<Any> =
+        Maybe.create { emitter ->
+            firebaseDatabase.collection("users")
                 .document(uuid)
-                .parent
-                .add(mapOf("uuid" to uuid, "name" to name))
+                .set(mapOf("name" to name))
                 .addOnSuccessListener {
-                    emitter.onSuccess(it)
+                    emitter.onComplete()
                 }
                 .addOnFailureListener {
+                    it.printStackTrace()
                     emitter.onError(Exception())
                 }
         }

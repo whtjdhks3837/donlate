@@ -12,12 +12,13 @@ import com.joe.donlate.view.BaseActivity
 import com.joe.donlate.view.meetings.MeetingsActivity
 import com.joe.donlate.view_model.profile.ProfileSettingViewModel
 import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
-import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 
 class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     override val layoutResource: Int = R.layout.activity_profile_setting
     private val viewModel: ProfileSettingViewModel by lazy {
-        ViewModelProviders.of(this, ProfileSettingViewModelFactory(get())).get(ProfileSettingViewModel::class.java)
+        val viewModelFactory: ProfileSettingViewModelFactory by inject("profileSettingViewModelFactory")
+        ViewModelProviders.of(this, viewModelFactory).get(ProfileSettingViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

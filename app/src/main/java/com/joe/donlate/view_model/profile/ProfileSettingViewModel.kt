@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.joe.donlate.model.ProfileSettingRepository
 import com.joe.donlate.util.IMAGE_UPLOAD_ERROR_MESSAGE
 import com.joe.donlate.util.NICKNAME_UPDATE_ERROR_MESSAGE
@@ -135,4 +137,10 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     fun setClickable(isClickable: Boolean) {
         _clickable.value = isClickable
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class ProfileSettingViewModelFactory(private val repository: ProfileSettingRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T =
+        ProfileSettingViewModel(repository) as T
 }

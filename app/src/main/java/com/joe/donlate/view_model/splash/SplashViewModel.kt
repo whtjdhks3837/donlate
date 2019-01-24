@@ -3,6 +3,8 @@ package com.joe.donlate.view_model.splash
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.joe.donlate.data.User
 import com.joe.donlate.model.SplashRepository
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
@@ -43,5 +45,12 @@ class SplashViewModel(private val repository: SplashRepository) : BaseViewModel(
 
     fun setProgress(isLoading: Boolean) {
         _progress.value = isLoading
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class SplashViewModelFactory(private val repository: SplashRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return SplashViewModel(repository) as T
     }
 }

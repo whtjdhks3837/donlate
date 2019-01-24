@@ -13,13 +13,14 @@ import com.joe.donlate.view.profile.ProfileSettingActivity
 import com.joe.donlate.view_model.splash.SplashViewModel
 import com.joe.donlate.view_model.splash.SplashViewModelFactory
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     override val layoutResource: Int = R.layout.activity_splash
     private val viewModel: SplashViewModel by lazy {
-        ViewModelProviders.of(this, SplashViewModelFactory(get()))
-            .get(SplashViewModel::class.java)
+        val viewModelFactory: SplashViewModelFactory by inject("splashViewModelFactory")
+        ViewModelProviders.of(this, viewModelFactory).get(SplashViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

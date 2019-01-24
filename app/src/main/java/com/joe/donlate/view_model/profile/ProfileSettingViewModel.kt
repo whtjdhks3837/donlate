@@ -15,8 +15,9 @@ import io.reactivex.schedulers.Schedulers
 
 class ProfileSettingViewModel(private val repository: ProfileSettingRepository) : BaseViewModel() {
     private val _user = MutableLiveData<Map<String, Any>>()
-    private val _updateNicknameClick = MutableLiveData<Any>()
-    private val _nickname = MutableLiveData<Any>()
+    private val _updateNameClick = MutableLiveData<Any>()
+    private val _updateName = MutableLiveData<Any>()
+    private val _name = MutableLiveData<String>()
     private val _startMeetingsClick = MutableLiveData<Any>()
     private val _imageClick = MutableLiveData<Any>()
     private val _image = MutableLiveData<Bitmap>()
@@ -26,8 +27,9 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     private val _clickable = MutableLiveData<Boolean>()
 
     val user: LiveData<Map<String, Any>> = _user
-    val updateNicknameClick: LiveData<Any> = _updateNicknameClick
-    val nickname: LiveData<Any> = _nickname
+    val updateNameClick: LiveData<Any> = _updateNameClick
+    val updateName: LiveData<Any> = _updateName
+    val name: LiveData<String> = _name
     val startMeetingsClick: LiveData<Any> = _startMeetingsClick
     val imageClick: LiveData<Any> = _imageClick
     val image: LiveData<Bitmap> = _image
@@ -36,7 +38,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     val progress: LiveData<Boolean> = _progress
     val clickable: LiveData<Boolean> = _clickable
 
-    fun updateNickname(uuid: String, name: String) {
+    fun updateName(uuid: String, name: String) {
         addDisposable(
             repository.updateNickname(uuid, name)
                 .subscribeOn(Schedulers.io())
@@ -46,7 +48,8 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                         it.printStackTrace()
                         _error.value = NICKNAME_UPDATE_ERROR_MESSAGE
                     }, {
-                        _nickname.value = ""
+                        _updateName.value = ""
+                        _name.value = name
                     })
         )
     }
@@ -80,6 +83,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                     _clickable.value = true
                     it.data?.let { data ->
                         _user.value = data
+                        _name.value = data["name"].toString()
                     } ?: setProgress(false)
                 }, {
                     it.printStackTrace()
@@ -121,7 +125,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
 
     fun onUpdateNicknameClick(view: View) {
         _clickable.value = false
-        _updateNicknameClick.value = ""
+        _updateNameClick.value = ""
     }
 
     fun setProgress(isLoading: Boolean) {

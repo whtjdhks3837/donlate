@@ -1,8 +1,6 @@
 package com.joe.donlate.model
 
 import android.graphics.Bitmap
-import android.net.Uri
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.storage.UploadTask
 import com.joe.donlate.util.firebaseDatabase

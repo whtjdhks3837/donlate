@@ -2,9 +2,6 @@ package com.joe.donlate.view.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -12,7 +9,7 @@ import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityProfileSettingBinding
 import com.joe.donlate.util.*
 import com.joe.donlate.view.BaseActivity
-import com.joe.donlate.view.splash.SplashActivity
+import com.joe.donlate.view.meetings.MeetingsActivity
 import com.joe.donlate.view_model.profile.ProfileSettingViewModel
 import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
 import org.koin.android.ext.android.get
@@ -32,11 +29,11 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
 
     private fun init() {
         userObserve()
-        nicknameObserve()
+        nameObserve()
         errorObserve()
         startMeetingsClickObserve()
         imageClickObserve()
-        updateNicknameClickObserve()
+        updateNameClickObserve()
         startMettingsActivityObserve()
 
         viewDataBinding.viewModel = viewModel
@@ -58,20 +55,25 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
         })
     }
 
-    private fun updateNicknameClickObserve() {
-        viewModel.updateNicknameClick.observe(this, Observer {
+    private fun updateNameClickObserve() {
+        viewModel.updateNameClick.observe(this, Observer {
             val name = viewDataBinding.nameEdit.text.toString()
-            if (nicknameValidate(name)) {
+            if (nameValidate(name)) {
                 viewModel.setProgress(true)
-                viewModel.updateNickname(UuidUtil.getUuid(this), name)
+                viewModel.updateName(UuidUtil.getUuid(this), name)
             } else {
-                // Todo : 버튼 안눌리는 것 고칠 것
                 viewModel.setClickable(true)
             }
         })
     }
 
-    private fun nicknameValidate(name: String): Boolean {
+    private fun nameValidate(name: String): Boolean {
+        viewModel.name.value?.let {
+            if (it == name) {
+                toast(this, "변경사항이 없습니다.")
+                return false
+            }
+        }
         if (name == "") {
             toast(this, "이름이 공백입니다.")
             return false
@@ -85,6 +87,7 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
 
     private fun errorObserve() {
         viewModel.error.observe(this, Observer {
+            viewModel.setClickable(true)
             viewModel.setProgress(false)
             toast(this, it)
         })
@@ -99,8 +102,9 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     }
 
 
-    private fun nicknameObserve() {
-        viewModel.nickname.observe(this, Observer {
+    private fun nameObserve() {
+        viewModel.updateName.observe(this, Observer {
+            viewModel.setClickable(true)
             viewModel.setProgress(false)
             toast(this, UPDATE_MESSAGE)
         })
@@ -109,7 +113,7 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun startMettingsActivityObserve() {
         viewModel.startMeetingsActivity.observe(this, Observer {
             viewModel.setProgress(false)
-            startActivity(Intent(this, SplashActivity::class.java))
+            startActivity(Intent(this, MeetingsActivity::class.java))
             finish()
         })
     }
@@ -128,7 +132,7 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CODE && resultCode == Activity.RESULT_OK) {
             data?.data?.let { _ ->
-                val bitmap = getResizeBitmap(data.data!!)
+                val bitmap = BitmapUtil.resize(this, data.data!!, 4)
                 bitmap?.let {
                     viewModel.setProgress(true)
                     viewModel.updateImage(UuidUtil.getUuid(this), it)
@@ -137,12 +141,6 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
         }
     }
 
-    private fun getResizeBitmap(uri: Uri): Bitmap? {
-        val inputStream = contentResolver.openInputStream(uri)
-        val options = BitmapFactory.Options()
-        options.inSampleSize = 4
-        return BitmapFactory.decodeStream(inputStream, null, options)
-    }
     /*private fun getPhoneNumber() {
         Utils.getPhoneNumber(this, { phone ->
             viewModel.checkAccount(phone, viewDataBinding.nameEdit.text.toString())

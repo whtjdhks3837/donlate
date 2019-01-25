@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityMeetingsBinding
+import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.view.BaseActivity
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
@@ -31,5 +32,7 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
 
         viewDataBinding.viewModel = viewModel
         viewDataBinding.setLifecycleOwner(this)
+
+        viewModel.getMeetings(UuidUtil.getUuid(this))
     }
 }

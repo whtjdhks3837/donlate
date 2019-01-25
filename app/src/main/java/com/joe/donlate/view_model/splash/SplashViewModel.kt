@@ -15,13 +15,9 @@ import io.reactivex.schedulers.Schedulers
 class SplashViewModel(private val repository: SplashRepository) : BaseViewModel() {
     private val _user = MutableLiveData<Map<String, Any>>()
     private val _userNotFound = MutableLiveData<Any>()
-    private val _error = MutableLiveData<String>()
-    private val _progress = MutableLiveData<Boolean>()
 
     val user: LiveData<Map<String, Any>> = _user
     val userNotFound: LiveData<Any> = _userNotFound
-    val error: LiveData<String> = _error
-    val progress: LiveData<Boolean> = _progress
 
     fun getMyAccount(uuid: String) {
         addDisposable(

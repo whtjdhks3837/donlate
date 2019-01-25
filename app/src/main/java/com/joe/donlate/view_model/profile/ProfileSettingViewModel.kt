@@ -24,8 +24,6 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     private val _imageClick = MutableLiveData<Any>()
     private val _image = MutableLiveData<Bitmap>()
     private val _startMeetingsActivity = MutableLiveData<Any>()
-    private val _error = MutableLiveData<String>()
-    private val _progress = MutableLiveData<Boolean>()
     private val _clickable = MutableLiveData<Boolean>()
 
     val user: LiveData<Map<String, Any>> = _user
@@ -36,8 +34,6 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     val imageClick: LiveData<Any> = _imageClick
     val image: LiveData<Bitmap> = _image
     val startMeetingsActivity: LiveData<Any> = _startMeetingsActivity
-    val error: LiveData<String> = _error
-    val progress: LiveData<Boolean> = _progress
     val clickable: LiveData<Boolean> = _clickable
 
     fun updateName(uuid: String, name: String) {

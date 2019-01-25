@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 abstract class MutableListAdapter<T, R : BaseHolder<T>> : RecyclerView.Adapter<R>() {
     abstract val items: MutableList<T>
 
-    fun add(item: T, position: Int? = null) {
+    fun add(item: T, position: Int? = items.size + 1) {
         position?.let {
             items.add(it, item)
             notifyItemInserted(it)

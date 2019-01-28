@@ -21,7 +21,7 @@ class ProfileSettingRepositoryImpl : ProfileSettingRepository {
         Maybe.create { emitter ->
             firebaseDatabase.collection("users")
                 .document(uuid)
-                .set(mapOf("name" to name))
+                .set(mapOf("uuid" to uuid, "name" to name))
                 .addOnSuccessListener {
                     emitter.onComplete()
                 }

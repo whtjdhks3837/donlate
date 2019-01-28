@@ -126,10 +126,6 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
         _updateNameClick.value = ""
     }
 
-    fun setProgress(isLoading: Boolean) {
-        _progress.value = isLoading
-    }
-
     fun setClickable(isClickable: Boolean) {
         _clickable.value = isClickable
     }

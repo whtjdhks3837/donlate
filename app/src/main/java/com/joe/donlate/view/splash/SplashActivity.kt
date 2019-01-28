@@ -9,6 +9,7 @@ import com.joe.donlate.databinding.ActivitySplashBinding
 import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.util.toast
 import com.joe.donlate.view.BaseActivity
+import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view.profile.ProfileSettingActivity
 import com.joe.donlate.view_model.splash.SplashViewModel
 import com.joe.donlate.view_model.splash.SplashViewModelFactory
@@ -43,6 +44,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private fun userObserve() {
         viewModel.user.observe(this, Observer {
             viewModel.setProgress(false)
+            startActivity(Intent(this, MeetingsAdapter::class.java))
+            finish()
         })
     }
 

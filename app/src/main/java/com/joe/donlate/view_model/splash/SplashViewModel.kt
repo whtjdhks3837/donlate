@@ -38,10 +38,6 @@ class SplashViewModel(private val repository: SplashRepository) : BaseViewModel(
     private fun userNotFound() {
         _userNotFound.value = ""
     }
-
-    fun setProgress(isLoading: Boolean) {
-        _progress.value = isLoading
-    }
 }
 
 @Suppress("UNCHECKED_CAST")

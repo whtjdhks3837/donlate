@@ -23,11 +23,19 @@ abstract class MutableListAdapter<T, R : BaseHolder<T>> : RecyclerView.Adapter<R
     }
 
     fun add(items: List<T>) {
-        //Todo : 필요시 기능추가
+        val preSize = this.items.size
+        this.items.addAll(items)
+        notifyItemRangeInserted(preSize, this.items.size)
     }
 
     fun remove(items: List<T>) {
         //Todo : 필요시 기능추가
+    }
+
+    fun set(items: List<T>) {
+        this.items.clear()
+        this.items.addAll(items)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = items.size

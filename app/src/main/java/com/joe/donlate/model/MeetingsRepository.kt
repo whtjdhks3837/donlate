@@ -1,18 +1,17 @@
 package com.joe.donlate.model
 
-import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
 import com.joe.donlate.util.firebaseDatabase
 import io.reactivex.Single
 
 interface MeetingsRepository {
-    fun getMeetings(uuid: String): Single<DocumentSnapshot>
+    fun getMeetings(uuid: String): Single<QuerySnapshot>
 }
 
 class MeetingsRepositoryImpl : MeetingsRepository {
-    override fun getMeetings(uuid: String): Single<DocumentSnapshot> =
+    override fun getMeetings(uuid: String): Single<QuerySnapshot> =
         Single.create { emitter ->
             firebaseDatabase.collection("meetings")
-                .document()
                 .get()
                 .addOnSuccessListener {
                     emitter.onSuccess(it)

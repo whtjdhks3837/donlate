@@ -12,6 +12,7 @@ class MeetingsRepositoryImpl : MeetingsRepository {
     override fun getMeetings(uuid: String): Single<QuerySnapshot> =
         Single.create { emitter ->
             firebaseDatabase.collection("meetings")
+                .whereArrayContains("participants", firebaseDatabase.collection("users").document(uuid))
                 .get()
                 .addOnSuccessListener {
                     emitter.onSuccess(it)

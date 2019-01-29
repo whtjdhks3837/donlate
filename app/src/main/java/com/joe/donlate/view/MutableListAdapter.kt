@@ -2,7 +2,7 @@ package com.joe.donlate.view
 
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class MutableListAdapter<T, R : BaseHolder<T>> : RecyclerView.Adapter<R>() {
+abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Adapter<R>() {
     abstract val items: MutableList<T>
 
     fun add(item: T, position: Int? = items.size + 1) {
@@ -28,6 +28,11 @@ abstract class MutableListAdapter<T, R : BaseHolder<T>> : RecyclerView.Adapter<R
         notifyItemRangeInserted(preSize, this.items.size)
     }
 
+    fun preAdd(items: List<T>) {
+        this.items.addAll(0, items)
+        notifyDataSetChanged()
+    }
+
     fun remove(items: List<T>) {
         //Todo : 필요시 기능추가
     }
@@ -42,5 +47,9 @@ abstract class MutableListAdapter<T, R : BaseHolder<T>> : RecyclerView.Adapter<R
 
     override fun onBindViewHolder(holder: R, position: Int) {
         holder.bind(items[position])
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return super.getItemViewType(position)
     }
 }

@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityMeetingsBinding
+import com.joe.donlate.util.GlideUtil
 import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.util.toast
 import com.joe.donlate.view.BaseActivity
@@ -29,7 +31,8 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
         super.onCreate(savedInstanceState)
 
         init()
-        viewModel.getMeetings(UuidUtil.getUuid(this))
+        getMeetings()
+        initProfileImage()
     }
 
     private fun init() {
@@ -43,6 +46,15 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
         viewDataBinding.setLifecycleOwner(this)
     }
 
+    private fun getMeetings() {
+        viewModel.setProgress(true)
+        viewModel.getMeetings(UuidUtil.getUuid(this))
+    }
+
+    private fun initProfileImage() {
+        GlideUtil.loadFirebaseStorage(this, viewDataBinding.profileImage)
+    }
+
     private fun roomsObserve() {
         viewModel.room.observe(this, Observer {
             it[0].participants[0].addSnapshotListener { a, b ->
@@ -52,7 +64,8 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
                     }
                 }
             }
-            viewModel.listAdapter.set(it)
+            viewModel.setProgress(false)
+            viewModel.listAdapter.preAdd(it)
         })
     }
 

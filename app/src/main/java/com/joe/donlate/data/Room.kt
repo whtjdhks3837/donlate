@@ -5,6 +5,10 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
 
 
+sealed class Meeting(val viewType: Int)
+
+class Add : Meeting(viewType = 1)
+
 data class Room(
     @Transient val title: String = "",
     @Transient val createAt: Timestamp = Timestamp.now(),
@@ -12,6 +16,7 @@ data class Room(
     @Transient val maxParticipants: Int = 0,
     @Transient val participants: List<DocumentReference> = emptyList(),
     @Transient val url: String = "",
-    @Transient val lateCost: Map<String, Int> = emptyMap(),
+    @Transient val penaltyTime: Int = 0,
+    @Transient val penaltyFee: Int = 0,
     @Transient val coordinate: GeoPoint = GeoPoint(0.0, 0.0)
-)
+) : Meeting(viewType = 0)

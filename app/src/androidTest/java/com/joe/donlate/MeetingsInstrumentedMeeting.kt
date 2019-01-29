@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
-class MeetingsInstrumentedTest {
+class MeetingsInstrumentedMeeting {
     private lateinit var context: Context
     private val disposable = CompositeDisposable()
     private val repository = MeetingsRepositoryImpl()

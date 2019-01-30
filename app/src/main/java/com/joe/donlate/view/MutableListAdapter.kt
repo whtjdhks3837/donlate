@@ -48,8 +48,4 @@ abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Ada
     override fun onBindViewHolder(holder: R, position: Int) {
         holder.bind(items[position])
     }
-
-    override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
-    }
 }

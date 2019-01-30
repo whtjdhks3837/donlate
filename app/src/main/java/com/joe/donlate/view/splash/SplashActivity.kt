@@ -17,7 +17,6 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
-
     override val layoutResource: Int = R.layout.activity_splash
     private val viewModel: SplashViewModel by lazy {
         val viewModelFactory: SplashViewModelFactory by inject("splashViewModelFactory")

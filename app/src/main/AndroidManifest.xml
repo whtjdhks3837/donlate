@@ -16,7 +16,7 @@
         </activity>
         <activity android:name=".view.profile.ProfileSettingActivity">
         </activity>
-        <activity android:name=".view.meetings.MeetingsActivity">
+        <activity android:name=".view.MeetingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>

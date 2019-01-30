@@ -16,8 +16,12 @@ import io.reactivex.schedulers.Schedulers
 
 class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewModel() {
     private val _rooms = MutableLiveData<List<Room>>()
+    private val _startCreateMeeting = MutableLiveData<Any>()
     val room: LiveData<List<Room>> = _rooms
-    val listAdapter = MeetingsAdapter()
+    val startCreateMeeting: LiveData<Any> = _startCreateMeeting
+    val listAdapter = MeetingsAdapter {
+        _startCreateMeeting.value = ""
+    }
 
     fun getMeetings(uuid: String) {
         addDisposable(repository.getMeetings(uuid)
@@ -36,6 +40,12 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
             })
         )
     }
+
+    private fun addClick() = {
+        _startCreateMeeting.value = ""
+        Unit
+    }
+
 }
 
 @Suppress("UNCHECKED_CAST")

@@ -9,7 +9,7 @@ import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityProfileSettingBinding
 import com.joe.donlate.util.*
 import com.joe.donlate.view.BaseActivity
-import com.joe.donlate.view.meetings.MeetingsActivity
+import com.joe.donlate.view.MeetingsActivity
 import com.joe.donlate.view_model.profile.ProfileSettingViewModel
 import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
 import org.koin.android.ext.android.inject

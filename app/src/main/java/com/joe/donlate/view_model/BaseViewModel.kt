@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
+const val CLICK = ""
 open class BaseViewModel : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     protected val _error by lazy { MutableLiveData<String>() }
@@ -19,6 +20,11 @@ open class BaseViewModel : ViewModel() {
 
     fun setProgress(isProgress: Boolean) {
         _progress.value = isProgress
+    }
+
+    fun error(message: String) {
+        setProgress(false)
+        _error.value = message
     }
 
     override fun onCleared() {

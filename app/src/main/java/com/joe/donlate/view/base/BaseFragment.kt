@@ -1,4 +1,4 @@
-package com.joe.donlate.view
+package com.joe.donlate.view.base
 
 import android.content.Context
 import android.os.Bundle
@@ -6,12 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
-abstract class BaseFragment<T: AppCompatActivity, R: ViewDataBinding> : Fragment() {
+abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment() {
     protected lateinit var activity: T
     protected lateinit var viewDataBinding: R
     abstract var layoutResource: Int

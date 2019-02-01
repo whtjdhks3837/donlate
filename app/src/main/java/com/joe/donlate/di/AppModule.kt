@@ -1,7 +1,9 @@
 package com.joe.donlate.di
 
+import com.joe.donlate.api.NaverMapService
 import com.joe.donlate.api.RetrofitService
 import com.joe.donlate.model.*
+import com.joe.donlate.util.NAVER_API_URL
 import com.joe.donlate.view_model.meetings.MeetingsViewModelFactory
 import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
 import com.joe.donlate.view_model.splash.SplashViewModelFactory
@@ -28,6 +30,20 @@ val apiModule = module {
             .baseUrl(url)
             .build()
             .create(RetrofitService::class.java)
+    }
+
+    single("naverMapApi") {
+        Retrofit.Builder()
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(get())
+                    .build()
+            )
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(NAVER_API_URL)
+            .build()
+            .create(NaverMapService::class.java)
     }
 
     single {
@@ -58,7 +74,7 @@ val profileSettingModule = module {
 
 val meetingsModule = module {
     factory("meetingsRepository") {
-        MeetingsRepositoryImpl() as MeetingsRepository
+        MeetingsRepositoryImpl(get("naverMapApi")) as MeetingsRepository
     }
 
     factory("meetingsViewModelFactory") {

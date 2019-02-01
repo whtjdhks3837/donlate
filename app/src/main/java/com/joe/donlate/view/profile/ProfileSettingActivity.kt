@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityProfileSettingBinding
 import com.joe.donlate.util.*
-import com.joe.donlate.view.BaseActivity
-import com.joe.donlate.view.MeetingsActivity
+import com.joe.donlate.view.base.BaseActivity
+import com.joe.donlate.view.meeting_main.MeetingsActivity
 import com.joe.donlate.view_model.profile.ProfileSettingViewModel
 import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
 import org.koin.android.ext.android.inject
@@ -60,7 +60,6 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
         viewModel.updateNameClick.observe(this, Observer {
             val name = viewDataBinding.nameEdit.text.toString()
             if (nameValidate(name)) {
-                viewModel.setProgress(true)
                 viewModel.updateName(UuidUtil.getUuid(this), name)
             } else {
                 viewModel.setClickable(true)
@@ -89,14 +88,12 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun errorObserve() {
         viewModel.error.observe(this, Observer {
             viewModel.setClickable(true)
-            viewModel.setProgress(false)
             toast(this, it)
         })
     }
 
     private fun userObserve() {
         viewModel.user.observe(this, Observer {
-            viewModel.setProgress(false)
             viewDataBinding.nameEdit.setText(it["name"].toString())
             GlideUtil.loadFirebaseStorage(this, viewDataBinding.profileImage)
         })
@@ -106,26 +103,22 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun nameObserve() {
         viewModel.updateName.observe(this, Observer {
             viewModel.setClickable(true)
-            viewModel.setProgress(false)
             toast(this, UPDATE_MESSAGE)
         })
     }
 
     private fun startMettingsActivityObserve() {
         viewModel.startMeetingsActivity.observe(this, Observer {
-            viewModel.setProgress(false)
             startActivity(Intent(this, MeetingsActivity::class.java))
             finish()
         })
     }
 
     private fun getMyAccount() {
-        viewModel.setProgress(true)
         viewModel.getMyAccount(UuidUtil.getUuid(this))
     }
 
     private fun checkAccount(uuid: String) {
-        viewModel.setProgress(true)
         viewModel.checkAccount(uuid)
     }
 

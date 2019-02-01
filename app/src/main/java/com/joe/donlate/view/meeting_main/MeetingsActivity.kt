@@ -1,15 +1,16 @@
-package com.joe.donlate.view
+package com.joe.donlate.view.meeting_main
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityMeetingsBinding
 import com.joe.donlate.util.toast
+import com.joe.donlate.view.OnKeyBackPressedListener
+import com.joe.donlate.view.base.BaseActivity
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meetings.MeetingsFragment
+import com.joe.donlate.view.search_place.SearchPlaceFragment
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
 import com.joe.donlate.view_model.meetings.MeetingsViewModelFactory
 import org.koin.android.ext.android.inject
@@ -24,11 +25,9 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val transaction = supportFragmentManager
-        transaction.beginTransaction()
+        supportFragmentManager.beginTransaction()
             .add(R.id.fragment, MeetingsFragment.instance, "meetings")
-            .addToBackStack("meetings_stack")
+            .addToBackStack(null)
             .commit()
 
         errorSubscribe()
@@ -44,32 +43,28 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
     }
 
     fun startCreateMeetingFragment() {
-        val transaction = supportFragmentManager
-        transaction.beginTransaction()
+        supportFragmentManager.beginTransaction()
             .replace(R.id.fragment, CreateMeetingFragment.instance, "create")
+            .addToBackStack(null)
             .commit()
     }
 
     fun startMeetingsFragment() {
-        val transaction = supportFragmentManager
-        transaction.beginTransaction()
+        supportFragmentManager.beginTransaction()
             .replace(R.id.fragment, MeetingsFragment.instance, "meetings")
             .commit()
     }
 
-    fun setOnKeyBackPressedListener(onKeyBackPressedListener: OnKeyBackPressedListener?) {
-        this.onKeyBackPressedListener = onKeyBackPressedListener
+    fun startSearchPlaceFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment, SearchPlaceFragment.instance, "searchPlace")
+            .commit()
     }
 
-    /*override fun onBackPressed() {
-        Log.e("tag", "${supportFragmentManager.backStackEntryCount}")
+    override fun onBackPressed() {
+        //Todo : 두 번 눌러야 종료되는 것 고칠 것
         supportFragmentManager.findFragmentByTag("create")?.let {
-            Log.e("tag", it.tag)
-            supportFragmentManager.beginTransaction().remove(it).replace(R.id.fragment, meetingsFragment).commit()
-            supportFragmentManager.popBackStack("meetings_stack", FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            supportFragmentManager.fragments.forEach {
-                Log.e("tag", "${it.tag}???")
-            }
+            startMeetingsFragment()
         } ?: super.onBackPressed()
-    }*/
+    }
 }

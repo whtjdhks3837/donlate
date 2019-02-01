@@ -12,6 +12,7 @@ import com.joe.donlate.util.NICKNAME_UPDATE_ERROR_MESSAGE
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.util.USER_REGIST_FAILURE
 import com.joe.donlate.view_model.BaseViewModel
+import com.joe.donlate.view_model.CLICK
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -37,6 +38,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     val clickable: LiveData<Boolean> = _clickable
 
     fun updateName(uuid: String, name: String) {
+        setProgress(true)
         addDisposable(
             repository.updateNickname(uuid, name)
                 .subscribeOn(Schedulers.io())
@@ -46,6 +48,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                         it.printStackTrace()
                         _error.value = NICKNAME_UPDATE_ERROR_MESSAGE
                     }, {
+                        setProgress(false)
                         _updateName.value = ""
                         _name.value = name
                     })
@@ -53,12 +56,13 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     }
 
     fun updateImage(uuid: String, image: Bitmap) {
+        setProgress(true)
         addDisposable(
             repository.updateImage(uuid, image)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    _progress.value = false
+                    setProgress(false)
                     _clickable.value = true
                     _image.value = image
                 }, {
@@ -75,14 +79,16 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
             .observeOn(AndroidSchedulers.mainThread())
 
     fun getMyAccount(uuid: String) {
+        setProgress(true)
         addDisposable(
             getAccount(uuid)
                 .subscribe({
                     _clickable.value = true
+                    setProgress(false)
                     it.data?.let { data ->
                         _user.value = data
                         _name.value = data["name"].toString()
-                    } ?: setProgress(false)
+                    }
                 }, {
                     it.printStackTrace()
                     _clickable.value = true
@@ -92,10 +98,12 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
     }
 
     fun checkAccount(uuid: String) {
+        setProgress(true)
         addDisposable(
             getAccount(uuid)
                 .subscribe({
                     _clickable.value = true
+                    setProgress(false)
                     it.data?.let { _ ->
                         _startMeetingsActivity.value = ""
                     } ?: userNotFound()
@@ -113,17 +121,17 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
 
     fun onStartMeetingsClick(view: View) {
         _clickable.value = false
-        _startMeetingsClick.value = ""
+        _startMeetingsClick.value = CLICK
     }
 
     fun onImageClick(view: View) {
         _clickable.value = false
-        _imageClick.value = ""
+        _imageClick.value = CLICK
     }
 
     fun onUpdateNicknameClick(view: View) {
         _clickable.value = false
-        _updateNameClick.value = ""
+        _updateNameClick.value = CLICK
     }
 
     fun setClickable(isClickable: Boolean) {

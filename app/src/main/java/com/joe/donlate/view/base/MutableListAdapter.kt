@@ -1,34 +1,27 @@
-package com.joe.donlate.view
+package com.joe.donlate.view.base
 
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Adapter<R>() {
     abstract val items: MutableList<T>
 
-    fun add(item: T, position: Int? = items.size + 1) {
-        position?.let {
-            items.add(it, item)
-            notifyItemInserted(it)
-        } ?: notifyAddItem(item)
+    open fun add(item: T, position: Int = items.size) {
+        items.add(position, item)
+        notifyItemInserted(position)
     }
 
-    private fun notifyAddItem(item: T) {
-        items.add(item)
-        notifyItemInserted(items.size - 1)
-    }
-
-    fun remove(position: Int) {
+    open fun remove(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
     }
 
-    fun add(items: List<T>) {
+    open fun add(items: List<T>) {
         val preSize = this.items.size
         this.items.addAll(items)
         notifyItemRangeInserted(preSize, this.items.size)
     }
 
-    fun preAdd(items: List<T>) {
+    open fun preAdd(items: List<T>) {
         this.items.addAll(0, items)
         notifyDataSetChanged()
     }

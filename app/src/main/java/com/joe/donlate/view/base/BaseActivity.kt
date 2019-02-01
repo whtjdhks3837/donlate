@@ -1,4 +1,4 @@
-package com.joe.donlate.view
+package com.joe.donlate.view.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

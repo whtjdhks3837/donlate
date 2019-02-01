@@ -1,7 +1,6 @@
 package com.joe.donlate.view.meetings.list
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.joe.donlate.data.AddButton
@@ -9,8 +8,8 @@ import com.joe.donlate.data.Meeting
 import com.joe.donlate.data.Room
 import com.joe.donlate.databinding.ListMeetingAddItemBinding
 import com.joe.donlate.databinding.ListMeetingItemBinding
-import com.joe.donlate.view.BaseHolder
-import com.joe.donlate.view.MutableListAdapter
+import com.joe.donlate.view.base.BaseHolder
+import com.joe.donlate.view.base.MutableListAdapter
 
 class MeetingsAdapter(private val addClick: () -> Unit) : MutableListAdapter<Meeting, BaseHolder<Meeting>>() {
     companion object {

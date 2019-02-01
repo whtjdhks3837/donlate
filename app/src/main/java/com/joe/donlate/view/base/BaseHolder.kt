@@ -1,4 +1,4 @@
-package com.joe.donlate.view
+package com.joe.donlate.view.base
 
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView

@@ -3,7 +3,11 @@
           package="com.joe.donlate">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
@@ -16,7 +20,7 @@
         </activity>
         <activity android:name=".view.profile.ProfileSettingActivity">
         </activity>
-        <activity android:name=".view.MeetingsActivity">
+        <activity android:name=".view.meeting_main.MeetingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>

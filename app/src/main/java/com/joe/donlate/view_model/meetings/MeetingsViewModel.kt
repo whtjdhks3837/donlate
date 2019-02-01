@@ -6,11 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.joe.donlate.data.Address
 import com.joe.donlate.data.Room
 import com.joe.donlate.model.MeetingsRepository
 import com.joe.donlate.util.CREATE_FAILURE_MESSAGE
+import com.joe.donlate.util.SEARCH_NOT_FOUND
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
+import com.joe.donlate.view.search_place.list.AddressesAdapter
 import com.joe.donlate.view_model.BaseViewModel
 import com.joe.donlate.view_model.CLICK
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,17 +24,22 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     private val _startCreateMeeting = MutableLiveData<Any>()
     private val _startSearchPlaceClick = MutableLiveData<Any>()
     private val _searchPlaceClick = MutableLiveData<Any>()
-    private val _place = MutableLiveData<Any>()
+    private val _place = MutableLiveData<String>()
     private val _createMeetingClick = MutableLiveData<Any>()
     private val _createMeeting = MutableLiveData<Room>()
+    private val _searchPlaceResult = MutableLiveData<List<Address>>()
+
     val room: LiveData<List<Room>> = _rooms
     val startCreateMeeting: LiveData<Any> = _startCreateMeeting
     val startSearchPlaceClick: LiveData<Any> = _startSearchPlaceClick
     val searchPlaceClick: LiveData<Any> = _searchPlaceClick
-    val place: LiveData<Any> = _place
+    val place: LiveData<String> = _place
     val createMeetingClick: LiveData<Any> = _createMeetingClick
     val createMeeting: LiveData<Room> = _createMeeting
-    val listAdapter = MeetingsAdapter(addClick())
+    val searchPlaceResult: LiveData<List<Address>> = _searchPlaceResult
+
+    val meetingsAdapter = MeetingsAdapter(_startCreateMeeting)
+    val addressesAdapter = AddressesAdapter(_place)
 
     fun getMeetings(uuid: String) {
         setProgress(true)
@@ -86,16 +94,15 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { setProgress(false) }
             .subscribe({
-                it.places
+                if (!it.addresses.isEmpty()) {
+                    _searchPlaceResult.value = it.addresses
+                } else {
+                    error(SEARCH_NOT_FOUND)
+                }
             }, {
                 it.printStackTrace()
                 error(SERVER_ERROR_MESSAGE)
             }))
-    }
-
-    private fun addClick() = {
-        _startCreateMeeting.value = CLICK
-        Unit
     }
 
     fun onSearchPlaceClick(view: View) {

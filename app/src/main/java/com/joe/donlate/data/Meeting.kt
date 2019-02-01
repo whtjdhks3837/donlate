@@ -19,4 +19,4 @@ data class Room(
     @Transient val coordinate: GeoPoint = GeoPoint(0.0, 0.0)
 ) : Meeting(viewType = 0)
 
-class AddButton(val click: () -> Unit) : Meeting(viewType = 1)
+class AddButton : Meeting(viewType = 1)

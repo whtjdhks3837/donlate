@@ -74,15 +74,18 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
                 return false
             }
         }
-        if (name == "") {
-            toast(this, "이름이 공백입니다.")
-            return false
+        return when {
+            name == "" -> {
+                toast(this, "이름이 공백입니다.")
+                false
+            }
+
+            name.length !in 2..6 -> {
+                toast(this, "2자에서 6자 사이로 입력해주세요..")
+                false
+            }
+            else -> true
         }
-        if (name.length !in 2..6) {
-            toast(this, "2자에서 6자 사이로 입력해주세요..")
-            return false
-        }
-        return true
     }
 
     private fun errorObserve() {

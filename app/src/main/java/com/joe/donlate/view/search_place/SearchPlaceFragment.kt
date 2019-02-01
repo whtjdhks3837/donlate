@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.joe.donlate.R
 import com.joe.donlate.databinding.FragmentSearchPlaceBinding
 import com.joe.donlate.util.toast
@@ -25,10 +27,15 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
         super.onCreate(savedInstanceState)
         activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
         searchClickSubscribe()
+        searchPlaceResultSubscribe()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
+        viewDataBinding.list.apply {
+            layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+            adapter = activityViewModel.addressesAdapter
+        }
         viewDataBinding.viewModel = activityViewModel
         return view
     }
@@ -50,4 +57,10 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
             }
             else -> true
         }
+
+    private fun searchPlaceResultSubscribe() {
+        activityViewModel.searchPlaceResult.observe(this, Observer {
+            activityViewModel.addressesAdapter.set(it)
+        })
+    }
 }

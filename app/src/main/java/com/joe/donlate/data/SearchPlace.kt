@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Place(
     @SerializedName("status") @Expose val status: String,
-    @SerializedName("addresses") @Expose val places: List<Address>
+    @SerializedName("addresses") @Expose val addresses: List<Address>
 )
 
 data class Address(

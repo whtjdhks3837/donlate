@@ -27,7 +27,6 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
-        setRoomAddButton()
         getMeetings()
         roomsSubscribe()
         startCreateMeetingSubscribe()
@@ -44,12 +43,10 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         initViews()
     }
 
-    private fun setRoomAddButton() = activityViewModel.listAdapter.setAddButton()
-
     private fun initViews() {
         list.apply {
             layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
-            adapter = activityViewModel.listAdapter
+            adapter = activityViewModel.meetingsAdapter
         }
         initProfileImage()
     }
@@ -64,7 +61,7 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
 
     private fun roomsSubscribe() {
         activityViewModel.room.observe(this, Observer {
-            activityViewModel.listAdapter.preAdd(it)
+            activityViewModel.meetingsAdapter.preAdd(it)
         })
     }
 

@@ -1,12 +1,10 @@
 package com.joe.donlate.view.create_meeting
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.model.ResourcePath
@@ -45,14 +43,14 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
 
     private fun createMeetingSubscribe() {
         activityViewModel.createMeeting.observe(this, Observer {
-            activityViewModel.listAdapter.add(it, activity.viewModel.listAdapter.itemCount - 1)
+            activityViewModel.meetingsAdapter.add(it, activity.viewModel.meetingsAdapter.itemCount - 1)
             activity.startMeetingsFragment()
         })
     }
 
     private fun placeSubscribe() {
         activityViewModel.place.observe(this, Observer {
-
+            viewDataBinding.searchPlace.setText(it)
         })
     }
 

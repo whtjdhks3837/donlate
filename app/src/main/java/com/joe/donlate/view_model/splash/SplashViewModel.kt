@@ -30,7 +30,7 @@ class SplashViewModel(private val repository: SplashRepository) : BaseViewModel(
                     } ?: userNotFound()
                 }, {
                     it.printStackTrace()
-                    _error.value = SERVER_ERROR_MESSAGE
+                    error(SERVER_ERROR_MESSAGE)
                 })
         )
     }

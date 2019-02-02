@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joe.donlate.R
 import com.joe.donlate.databinding.FragmentSearchPlaceBinding
 import com.joe.donlate.util.toast
+import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
+import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
 
-class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBinding>() {
+class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBinding>(), OnFragmentKeyBackListener {
     companion object {
         val instance = SearchPlaceFragment()
     }
@@ -40,6 +43,16 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
         return view
     }
 
+    override fun onStart() {
+        super.onStart()
+        activity.setOnFragmentKeyBackListener(this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        activity.setOnFragmentKeyBackListener(null)
+    }
+
     private fun searchClickSubscribe() {
         activityViewModel.searchPlaceClick.observe(this, Observer {
             val text = viewDataBinding.placeEdit.text.toString()
@@ -62,5 +75,9 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
         activityViewModel.searchPlaceResult.observe(this, Observer {
             activityViewModel.addressesAdapter.set(it)
         })
+    }
+
+    override fun onBack(stackName: String?) {
+        activity.supportFragmentManager.popBackStackImmediate()
     }
 }

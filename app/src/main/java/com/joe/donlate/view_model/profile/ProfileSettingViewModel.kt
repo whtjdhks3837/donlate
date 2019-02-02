@@ -46,7 +46,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                 .subscribe({},
                     {
                         it.printStackTrace()
-                        _error.value = NICKNAME_UPDATE_ERROR_MESSAGE
+                        error(NICKNAME_UPDATE_ERROR_MESSAGE)
                     }, {
                         setProgress(false)
                         _updateName.value = ""
@@ -68,7 +68,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                 }, {
                     it.printStackTrace()
                     _clickable.value = true
-                    _error.value = IMAGE_UPLOAD_ERROR_MESSAGE
+                    error(IMAGE_UPLOAD_ERROR_MESSAGE)
                 })
         )
     }
@@ -92,7 +92,7 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                 }, {
                     it.printStackTrace()
                     _clickable.value = true
-                    _error.value = SERVER_ERROR_MESSAGE
+                    error(SERVER_ERROR_MESSAGE)
                 })
         )
     }
@@ -110,13 +110,13 @@ class ProfileSettingViewModel(private val repository: ProfileSettingRepository) 
                 }, {
                     it.printStackTrace()
                     _clickable.value = true
-                    _error.value = SERVER_ERROR_MESSAGE
+                    error(SERVER_ERROR_MESSAGE)
                 })
         )
     }
 
     private fun userNotFound() {
-        _error.value = USER_REGIST_FAILURE
+        error(USER_REGIST_FAILURE)
     }
 
     fun onStartMeetingsClick(view: View) {

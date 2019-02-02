@@ -53,11 +53,11 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                         val rooms = it.toObjects(Room::class.java)
                         _rooms.value = rooms
                     } else {
-                        _error.value = "방이 없어용 ㅠ"
+                        error("방이 없어용 ㅠ")
                     }
                 }, {
                     it.printStackTrace()
-                    _error.value = SERVER_ERROR_MESSAGE
+                    error(SERVER_ERROR_MESSAGE)
                 })
         )
     }

@@ -1,12 +1,15 @@
 package com.joe.donlate.view.meeting_main
 
 import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityMeetingsBinding
 import com.joe.donlate.util.toast
-import com.joe.donlate.view.OnKeyBackPressedListener
+import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseActivity
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meetings.MeetingsFragment
@@ -16,17 +19,22 @@ import com.joe.donlate.view_model.meetings.MeetingsViewModelFactory
 import org.koin.android.ext.android.inject
 
 class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
+    object FragmentTag{
+        const val MEETINGS = "meetings"
+        const val CREATE_MEETING = "create_meeting"
+        const val SEARCH_PLACE = "search_place"
+    }
     override val layoutResource: Int = R.layout.activity_meetings
     val viewModel: MeetingsViewModel by lazy {
         val viewModelFactory: MeetingsViewModelFactory by inject("meetingsViewModelFactory")
         ViewModelProviders.of(this, viewModelFactory).get(MeetingsViewModel::class.java)
     }
-    private var onKeyBackPressedListener: OnKeyBackPressedListener? = null
+    private var onFragmentKeyBackListener: OnFragmentKeyBackListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment, MeetingsFragment.instance, "meetings")
+            .add(R.id.fragment, MeetingsFragment.instance, FragmentTag.MEETINGS)
             .addToBackStack(null)
             .commit()
 
@@ -42,29 +50,19 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
         })
     }
 
-    fun startCreateMeetingFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, CreateMeetingFragment.instance, "create")
-            .addToBackStack(null)
-            .commit()
+    fun setOnFragmentKeyBackListener(onFragmentKeyBackListener: OnFragmentKeyBackListener?) {
+        this.onFragmentKeyBackListener = onFragmentKeyBackListener
     }
 
-    fun startMeetingsFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, MeetingsFragment.instance, "meetings")
-            .commit()
-    }
+    fun fragmentReplace(fragment: Fragment, tag: String) {
 
-    fun startSearchPlaceFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, SearchPlaceFragment.instance, "searchPlace")
-            .commit()
     }
 
     override fun onBackPressed() {
-        //Todo : 두 번 눌러야 종료되는 것 고칠 것
-        supportFragmentManager.findFragmentByTag("create")?.let {
-            startMeetingsFragment()
-        } ?: super.onBackPressed()
+        supportFragmentManager.fragments.forEach {
+            if (it.tag == FragmentTag.MEETINGS)
+                super.onBackPressed()
+        }
+        onFragmentKeyBackListener?.onBack(null) ?: super.onBackPressed()
     }
 }

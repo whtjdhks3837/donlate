@@ -19,11 +19,12 @@ import com.joe.donlate.view_model.meetings.MeetingsViewModelFactory
 import org.koin.android.ext.android.inject
 
 class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
-    object FragmentTag{
+    object FragmentTag {
         const val MEETINGS = "meetings"
         const val CREATE_MEETING = "create_meeting"
         const val SEARCH_PLACE = "search_place"
     }
+
     override val layoutResource: Int = R.layout.activity_meetings
     val viewModel: MeetingsViewModel by lazy {
         val viewModelFactory: MeetingsViewModelFactory by inject("meetingsViewModelFactory")
@@ -35,7 +36,7 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
         super.onCreate(savedInstanceState)
         supportFragmentManager.beginTransaction()
             .add(R.id.fragment, MeetingsFragment.instance, FragmentTag.MEETINGS)
-            .addToBackStack(null)
+            .addToBackStack(FragmentTag.MEETINGS)
             .commit()
 
         errorSubscribe()
@@ -59,11 +60,11 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
     }
 
     override fun onBackPressed() {
-        Log.e("tag", "${supportFragmentManager.backStackEntryCount}")
-        supportFragmentManager.fragments.forEach {
-            if (it.tag == FragmentTag.MEETINGS)
-                super.onBackPressed()
+        supportFragmentManager.fragments.find { it.isVisible && it.tag == FragmentTag.MEETINGS }
+            ?.let { finish() }
+        supportFragmentManager.fragments.find { it.isVisible }?.let {
+            onFragmentKeyBackListener?.onBack(it.tag) ?: super.onBackPressed()
         }
-        onFragmentKeyBackListener?.onBack(null) ?: super.onBackPressed()
+        Log.e("tag", "${supportFragmentManager.backStackEntryCount}")
     }
 }

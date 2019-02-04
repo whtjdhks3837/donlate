@@ -9,12 +9,13 @@ import com.joe.donlate.data.Meeting
 import com.joe.donlate.data.Room
 import com.joe.donlate.databinding.ListMeetingAddItemBinding
 import com.joe.donlate.databinding.ListMeetingItemBinding
+import com.joe.donlate.util.SingleLiveData
 import com.joe.donlate.view.base.BaseHolder
 import com.joe.donlate.view.base.MutableListAdapter
 import com.joe.donlate.view_model.CLICK
 import java.util.*
 
-class MeetingsAdapter(private val startCreateMeeting: MutableLiveData<Any>) :
+class MeetingsAdapter(private val startCreateMeeting: SingleLiveData<Any>) :
     MutableListAdapter<Meeting, BaseHolder<Meeting>>() {
     companion object {
         private const val ROOM_VIEW_TYPE = 0
@@ -54,13 +55,12 @@ class MeetingsAdapter(private val startCreateMeeting: MutableLiveData<Any>) :
         }
 }
 
-class AddHolder(private val binding: ListMeetingAddItemBinding, private val startCreateMeeting: MutableLiveData<Any>) :
+class AddHolder(private val binding: ListMeetingAddItemBinding, private val startCreateMeeting: SingleLiveData<Any>) :
     BaseHolder<Meeting>(binding) {
     override fun bind(data: Meeting) {
         data as AddButton
         itemView.setOnClickListener {
-            startCreateMeeting.value = CLICK
-            startCreateMeeting.value = null
+            startCreateMeeting.call()
         }
     }
 }

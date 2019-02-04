@@ -56,15 +56,13 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
     override fun onDestroyView() {
         super.onDestroyView()
         activity.setOnFragmentKeyBackListener(null)
-        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
-        viewDataBinding.viewModel = null
-        viewDataBinding.setLifecycleOwner(null)
     }
 
     private fun createMeetingSubscribe() {
         activityViewModel.createMeeting.observe(viewLifecycleOwner, Observer {
-            activityViewModel.meetingsAdapter.addFirst(it)
-            activity.supportFragmentManager.popBackStackImmediate()
+            activityViewModel.initCreateMeetingLiveData()
+            activityViewModel.addRoom(it)
+            activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         })
     }
 
@@ -100,14 +98,13 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
         activityViewModel.startSearchPlaceClick.observe(viewLifecycleOwner, Observer {
             activity.supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment, SearchPlaceFragment.instance, MeetingsActivity.FragmentTag.SEARCH_PLACE)
-                .addToBackStack(null)
+                .addToBackStack(MeetingsActivity.FragmentTag.SEARCH_PLACE)
                 .commit()
         })
     }
 
     override fun onBack(stackName: String?) {
-        //TODO("pop stack 오류 해결")
-        Log.e("tag", "create pop stack!!")
-        activity.supportFragmentManager.popBackStack()
+        activityViewModel.initCreateMeetingLiveData()
+        activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 }

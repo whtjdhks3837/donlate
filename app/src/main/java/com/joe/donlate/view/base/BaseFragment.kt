@@ -25,6 +25,7 @@ abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment()
         super.onCreate(savedInstanceState)
         Log.e("tag", "$tag onCreate")
         Log.e("tag", "$tag state onCreate: ${lifecycle.currentState.name}")
+        Log.e("tag", "stack : ${activity.supportFragmentManager.backStackEntryCount}")
     }
 
     /**
@@ -42,6 +43,8 @@ abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment()
         super.onDestroyView()
         Log.e("tag", "$tag onDestroyView")
         Log.e("tag", "$tag state onDestroyView: ${lifecycle.currentState.name}")
+        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
+        viewDataBinding.setLifecycleOwner(null)
     }
 
     /**

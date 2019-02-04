@@ -1,6 +1,7 @@
 package com.joe.donlate.view.search_place
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,7 +78,8 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
         })
     }
 
+    //TODO("back stack error 해결")
     override fun onBack(stackName: String?) {
-        activity.supportFragmentManager.popBackStackImmediate()
+        activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 }

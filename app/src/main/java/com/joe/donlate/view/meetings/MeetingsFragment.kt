@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -57,8 +58,6 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     override fun onDestroyView() {
         super.onDestroyView()
         activity.setOnFragmentKeyBackListener(null)
-        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
-        viewDataBinding.setLifecycleOwner(null)
     }
 
     private fun initViews() {
@@ -75,22 +74,22 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         activityViewModel.room.observe(viewLifecycleOwner, Observer {
             list.adapter = activityViewModel.meetingsAdapter
             //TODO("adapter item 동작방식 변경")
-            if (activityViewModel.meetingsAdapter.items != it)
-                activityViewModel.meetingsAdapter.add(it)
+            if (activityViewModel.meetingsAdapter.items != it) {
+                activityViewModel.meetingsAdapter.set(it)
+            }
         })
     }
 
     private fun startCreateMeetingSubscribe() {
-        activity.viewModel.startCreateMeeting.observe(this, Observer {
-            if (it != null)
-                activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
-                    .addToBackStack(null)
-                    .commit()
+        activity.viewModel.startCreateMeeting.observe(viewLifecycleOwner, Observer {
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
+                .addToBackStack(MeetingsActivity.FragmentTag.CREATE_MEETING)
+                .commit()
         })
     }
 
     override fun onBack(stackName: String?) {
-        activity.supportFragmentManager.popBackStackImmediate()
+        activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 }

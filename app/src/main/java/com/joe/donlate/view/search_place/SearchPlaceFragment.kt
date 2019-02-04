@@ -29,8 +29,6 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
-        searchClickSubscribe()
-        searchPlaceResultSubscribe()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,6 +38,8 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
             adapter = activityViewModel.addressesAdapter
         }
         viewDataBinding.viewModel = activityViewModel
+        searchClickSubscribe()
+        searchPlaceResultSubscribe()
         return view
     }
 

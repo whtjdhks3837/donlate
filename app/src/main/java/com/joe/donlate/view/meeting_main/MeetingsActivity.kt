@@ -59,6 +59,7 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
     }
 
     override fun onBackPressed() {
+        Log.e("tag", "${supportFragmentManager.backStackEntryCount}")
         supportFragmentManager.fragments.forEach {
             if (it.tag == FragmentTag.MEETINGS)
                 super.onBackPressed()

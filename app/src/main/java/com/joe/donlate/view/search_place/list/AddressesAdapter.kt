@@ -7,9 +7,10 @@ import com.joe.donlate.data.Address
 import com.joe.donlate.databinding.ListAddressItemBinding
 import com.joe.donlate.view.base.BaseHolder
 import com.joe.donlate.view.base.MutableListAdapter
+import java.util.*
 
 class AddressesAdapter(private val addressClick: MutableLiveData<String>) : MutableListAdapter<Address, BaseHolder<Address>>() {
-    override val items: MutableList<Address> = mutableListOf()
+    override val items: LinkedList<Address> = LinkedList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<Address> {
         return AddressesHolder(

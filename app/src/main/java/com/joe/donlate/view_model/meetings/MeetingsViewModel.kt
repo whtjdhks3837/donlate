@@ -10,6 +10,7 @@ import com.joe.donlate.data.Address
 import com.joe.donlate.data.Room
 import com.joe.donlate.model.MeetingsRepository
 import com.joe.donlate.util.CREATE_FAILURE_MESSAGE
+import com.joe.donlate.util.ClickLiveData
 import com.joe.donlate.util.SEARCH_NOT_FOUND
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
@@ -25,7 +26,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     private val _startSearchPlaceClick = MutableLiveData<Any>()
     private val _searchPlaceClick = MutableLiveData<Any>()
     private val _place = MutableLiveData<String>()
-    private val _createMeetingClick = MutableLiveData<Any>()
+    private val _createMeetingClick = ClickLiveData<Any>()
     private val _createMeeting = MutableLiveData<Room>()
     private val _searchPlaceResult = MutableLiveData<List<Address>>()
 
@@ -42,6 +43,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     val addressesAdapter = AddressesAdapter(_place)
 
     fun getMeetings(uuid: String) {
+        Log.e("tag", "getMeetings")
         setProgress(true)
         addDisposable(
             repository.getMeetings(uuid)
@@ -49,13 +51,16 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { setProgress(false) }
                 .subscribe({
+                    Log.e("tag", "getMeetings onSucceess")
                     if (!it.isEmpty) {
+                        Log.e("tag", "not empty")
                         val rooms = it.toObjects(Room::class.java)
                         _rooms.value = rooms
                     } else {
                         error("방이 없어용 ㅠ")
                     }
                 }, {
+                    Log.e("tag", "getMeetings onFailure")
                     it.printStackTrace()
                     error(SERVER_ERROR_MESSAGE)
                 })

@@ -29,53 +29,54 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
     }
 
     override var layoutResource: Int = R.layout.fragment_create_meeting
-
     private lateinit var activityViewModel: MeetingsViewModel
 
     //Todo : 저장 성공 시 data 약속 프래그먼트로 넘길 것
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        viewDataBinding.viewModel = activityViewModel
+        viewDataBinding.setLifecycleOwner(viewLifecycleOwner)
+        activity.setOnFragmentKeyBackListener(this)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         createMeetingSubscribe()
         createMeetingClickSubscribe()
         placeSubscribe()
         startSearchPlaceClickSubscribe()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-        viewDataBinding.viewModel = activityViewModel
-        return view
-    }
-
-    override fun onStart() {
-        super.onStart()
-        activity.setOnFragmentKeyBackListener(this)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         activity.setOnFragmentKeyBackListener(null)
+        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
+        viewDataBinding.viewModel = null
+        viewDataBinding.setLifecycleOwner(null)
     }
 
     private fun createMeetingSubscribe() {
-        activityViewModel.createMeeting.observe(this, Observer {
-            activityViewModel.meetingsAdapter.add(it, activity.viewModel.meetingsAdapter.itemCount - 1)
-            /*activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, MeetingsFragment.instance, MeetingsActivity.FragmentTag.MEETINGS)
-                .commit()*/
+        activityViewModel.createMeeting.observe(viewLifecycleOwner, Observer {
+            activityViewModel.meetingsAdapter.addFirst(it)
             activity.supportFragmentManager.popBackStackImmediate()
         })
     }
 
     private fun placeSubscribe() {
-        activityViewModel.place.observe(this, Observer {
+        //TODO("장소 Live data 삭제")
+        activityViewModel.place.observe(viewLifecycleOwner, Observer {
             viewDataBinding.searchPlace.setText(it)
         })
     }
 
     private fun createMeetingClickSubscribe() {
-        activityViewModel.createMeetingClick.observe(this, Observer {
+        activityViewModel.createMeetingClick.observe(viewLifecycleOwner, Observer {
             activityViewModel.createMeeting(
                 UuidUtil.getUuid(activity),
                 Room(
@@ -96,8 +97,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
     }
 
     private fun startSearchPlaceClickSubscribe() {
-        Log.e("tag", "startSearchPlaceClickSubscribe")
-        activityViewModel.startSearchPlaceClick.observe(this, Observer {
+        activityViewModel.startSearchPlaceClick.observe(viewLifecycleOwner, Observer {
             activity.supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment, SearchPlaceFragment.instance, MeetingsActivity.FragmentTag.SEARCH_PLACE)
                 .addToBackStack(null)
@@ -106,9 +106,8 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
     }
 
     override fun onBack(stackName: String?) {
-        activity.supportFragmentManager.popBackStackImmediate()
-        /*stackName?.let {
-            activity.supportFragmentManager.popBackStackImmediate(it, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        } ?: activity.supportFragmentManager.popBackStackImmediate()*/
+        //TODO("pop stack 오류 해결")
+        Log.e("tag", "create pop stack!!")
+        activity.supportFragmentManager.popBackStack()
     }
 }

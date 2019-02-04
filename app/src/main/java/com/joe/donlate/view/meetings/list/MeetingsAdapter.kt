@@ -12,6 +12,7 @@ import com.joe.donlate.databinding.ListMeetingItemBinding
 import com.joe.donlate.view.base.BaseHolder
 import com.joe.donlate.view.base.MutableListAdapter
 import com.joe.donlate.view_model.CLICK
+import java.util.*
 
 class MeetingsAdapter(private val startCreateMeeting: MutableLiveData<Any>) :
     MutableListAdapter<Meeting, BaseHolder<Meeting>>() {
@@ -20,11 +21,7 @@ class MeetingsAdapter(private val startCreateMeeting: MutableLiveData<Any>) :
         private const val ADD_VIEW_TYPE = 1
     }
 
-    override val items: MutableList<Meeting> = mutableListOf()
-
-    init {
-        items.add(AddButton())
-    }
+    override val items: LinkedList<Meeting> = LinkedList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<Meeting> =
         when (viewType) {
@@ -44,15 +41,15 @@ class MeetingsAdapter(private val startCreateMeeting: MutableLiveData<Any>) :
     override fun onBindViewHolder(holder: BaseHolder<Meeting>, position: Int) {
         when (holder.itemViewType) {
             ROOM_VIEW_TYPE -> (holder as MeetingsHolder).bind(items[position])
-            else -> (holder as AddHolder).bind(items[position])
+            else -> (holder as AddHolder).bind(AddButton())
         }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = items.size + 1
 
     override fun getItemViewType(position: Int): Int =
-        when (items[position].viewType) {
-            ROOM_VIEW_TYPE -> ROOM_VIEW_TYPE
+        when {
+            position < items.size -> ROOM_VIEW_TYPE
             else -> ADD_VIEW_TYPE
         }
 }
@@ -63,6 +60,7 @@ class AddHolder(private val binding: ListMeetingAddItemBinding, private val star
         data as AddButton
         itemView.setOnClickListener {
             startCreateMeeting.value = CLICK
+            startCreateMeeting.value = null
         }
     }
 }

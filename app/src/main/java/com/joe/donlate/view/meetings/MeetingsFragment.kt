@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,17 +30,22 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
         activity.setOnFragmentKeyBackListener(this)
-        getMeetings()
-        roomsSubscribe()
-        startCreateMeetingSubscribe()
+        activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
+        activityViewModel.getMeetings(UuidUtil.getUuid(activity))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         viewDataBinding.viewModel = activityViewModel
+        viewDataBinding.setLifecycleOwner(viewLifecycleOwner)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        roomsSubscribe()
+        startCreateMeetingSubscribe()
     }
 
     override fun onStart() {
@@ -53,19 +57,14 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     override fun onDestroyView() {
         super.onDestroyView()
         activity.setOnFragmentKeyBackListener(null)
+        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
+        viewDataBinding.setLifecycleOwner(null)
     }
 
     private fun initViews() {
-        list.apply {
-            layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
-            adapter = activityViewModel.meetingsAdapter
-        }
+        //TODO("데이터 읽어오는 로직 변경")
+        list.layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
         initProfileImage()
-    }
-
-    private fun getMeetings() {
-        Log.e("tag", "getMeetings")
-        activityViewModel.getMeetings(UuidUtil.getUuid(activity))
     }
 
     private fun initProfileImage() {
@@ -73,25 +72,25 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     }
 
     private fun roomsSubscribe() {
-        activityViewModel.room.observe(this, Observer {
-            Log.e("tag", "roomsSubscribe")
-            activityViewModel.meetingsAdapter.preAdd(it)
+        activityViewModel.room.observe(viewLifecycleOwner, Observer {
+            list.adapter = activityViewModel.meetingsAdapter
+            //TODO("adapter item 동작방식 변경")
+            if (activityViewModel.meetingsAdapter.items != it)
+                activityViewModel.meetingsAdapter.add(it)
         })
     }
 
     private fun startCreateMeetingSubscribe() {
-        activityViewModel.startCreateMeeting.observe(this, Observer {
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
-                .addToBackStack(null)
-                .commit()
+        activity.viewModel.startCreateMeeting.observe(this, Observer {
+            if (it != null)
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
+                    .addToBackStack(null)
+                    .commit()
         })
     }
 
     override fun onBack(stackName: String?) {
         activity.supportFragmentManager.popBackStackImmediate()
-        /*stackName?.let {
-            activity.supportFragmentManager.popBackStackImmediate(it, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        } ?: activity.supportFragmentManager.popBackStackImmediate()*/
     }
 }

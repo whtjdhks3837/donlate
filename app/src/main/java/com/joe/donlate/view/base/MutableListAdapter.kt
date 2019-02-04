@@ -1,13 +1,19 @@
 package com.joe.donlate.view.base
 
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Adapter<R>() {
-    abstract val items: MutableList<T>
+    abstract val items: LinkedList<T>
 
     open fun add(item: T, position: Int = items.size) {
         items.add(position, item)
         notifyItemInserted(position)
+    }
+
+    fun addFirst(item: T) {
+        items.addFirst(item)
+        notifyItemInserted(0)
     }
 
     open fun remove(position: Int) {

@@ -140,17 +140,18 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         _rooms.value?.addFirst(room)
     }
 
-    fun removeMeetingLiveDatas() {
+    fun initCreateMeetingBindingData() {
         Log.e("tag", "removeMeetingLiveDatas")
-        title.value = null
-        year.value = null
-        month.value = null
-        day.value = null
-        hour.value = null
-        min.value = null
-        maxParticipants.value = null
-        penaltyTime.value = null
-        penaltyFee.value = null
+        title.value = ""
+        year.value = ""
+        month.value = ""
+        day.value = ""
+        hour.value = ""
+        min.value = ""
+        maxParticipants.value = ""
+        penaltyTime.value = ""
+        penaltyFee.value = ""
+        _place.value = ""
     }
 }
 

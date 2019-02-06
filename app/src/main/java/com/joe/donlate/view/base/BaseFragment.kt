@@ -46,8 +46,8 @@ abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment()
         super.onDestroyView()
         Log.e("tag", "$tag onDestroyView")
         Log.e("tag", "$tag state onDestroyView: ${lifecycle.currentState.name}")
-        /*viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
-        viewDataBinding.setLifecycleOwner(null)*/
+        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
+        viewDataBinding.setLifecycleOwner(null)
     }
 
     /**

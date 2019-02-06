@@ -14,7 +14,6 @@ import com.joe.donlate.R
 import com.joe.donlate.data.Room
 import com.joe.donlate.databinding.FragmentCreateMeetingBinding
 import com.joe.donlate.util.UuidUtil
-import com.joe.donlate.util.afterTextChangedUpdateLiveData
 import com.joe.donlate.util.firebaseDatabase
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
@@ -39,16 +38,15 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
     //Todo : 저장 성공 시 data 약속 프래그먼트로 넘길 것
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
+        activityViewModel = activity.run { ViewModelProviders.of(this).get(MeetingsViewModel::class.java) }
+        activityViewModel.initCreateMeetingBindingData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         viewDataBinding.viewModel = activityViewModel
         viewDataBinding.setLifecycleOwner(this)
-        editTextAfterTextWatcher()
         activity.setOnFragmentKeyBackListener(this)
-        Log.e("tag", "${activityViewModel.title.value}")
         return view
     }
 
@@ -65,22 +63,6 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
         activity.setOnFragmentKeyBackListener(null)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        activityViewModel.removeMeetingLiveDatas()
-    }
-
-    private fun editTextAfterTextWatcher() {
-        viewDataBinding.editTitle.afterTextChangedUpdateLiveData(activityViewModel.title)
-        viewDataBinding.year.afterTextChangedUpdateLiveData(activityViewModel.year)
-        viewDataBinding.month.afterTextChangedUpdateLiveData(activityViewModel.month)
-        viewDataBinding.day.afterTextChangedUpdateLiveData(activityViewModel.day)
-        viewDataBinding.hour.afterTextChangedUpdateLiveData(activityViewModel.hour)
-        viewDataBinding.min.afterTextChangedUpdateLiveData(activityViewModel.min)
-        viewDataBinding.maxParticipants.afterTextChangedUpdateLiveData(activityViewModel.maxParticipants)
-        viewDataBinding.penaltyTime.afterTextChangedUpdateLiveData(activityViewModel.penaltyTime)
-        viewDataBinding.penaltyFee.afterTextChangedUpdateLiveData(activityViewModel.penaltyFee)
-    }
 
     private fun createMeetingSubscribe() {
         activityViewModel.createMeeting.observe(viewLifecycleOwner, Observer {
@@ -182,7 +164,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
             else -> true
         }
 
-        private fun isTitleEmpty() = editTitle.text.isEmpty()
+        private fun isTitleEmpty() = editTitle.text?.isEmpty() ?: false
 
         private fun isYearLesser() = year.text.toString().toInt() < Calendar.YEAR
 

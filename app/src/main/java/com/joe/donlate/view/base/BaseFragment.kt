@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.joe.donlate.databinding.FragmentMeetingsBinding
+import kotlinx.android.synthetic.*
+import kotlinx.android.synthetic.main.fragment_create_meeting.*
 
 abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment() {
     protected lateinit var activity: T
@@ -35,7 +38,7 @@ abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.e("tag", "$tag onCreateView")
         Log.e("tag", "$tag state onCreateView: ${lifecycle.currentState.name}")
-        viewDataBinding = DataBindingUtil.inflate(inflater, layoutResource, container, false)
+        viewDataBinding = DataBindingUtil.inflate(inflater, layoutResource, container, false) as R
         return viewDataBinding.root
     }
 
@@ -43,12 +46,12 @@ abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment()
         super.onDestroyView()
         Log.e("tag", "$tag onDestroyView")
         Log.e("tag", "$tag state onDestroyView: ${lifecycle.currentState.name}")
-        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
-        viewDataBinding.setLifecycleOwner(null)
+        /*viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
+        viewDataBinding.setLifecycleOwner(null)*/
     }
 
     /**
-     * onCreate와 onCreateView 사이에 lifecycle의 이벤트 DESTROY 호출
+     * onDestroyView onDetach 사이에 lifecycle의 이벤트 DESTROY 호출
      */
 
     override fun onDetach() {

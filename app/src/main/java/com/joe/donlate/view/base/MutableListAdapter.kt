@@ -42,6 +42,11 @@ abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Ada
         notifyDataSetChanged()
     }
 
+    fun clear() {
+        items.clear()
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: R, position: Int) {

@@ -18,6 +18,7 @@ import com.joe.donlate.view.base.BaseFragment
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
+import kotlinx.android.synthetic.main.fragment_search_place.*
 
 class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBinding>(), OnFragmentKeyBackListener {
     companion object {
@@ -34,6 +35,8 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
+        //TODO : EditText clear
+        viewDataBinding.placeEdit.setText("")
         viewDataBinding.list.apply {
             layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             adapter = activityViewModel.addressesAdapter
@@ -50,12 +53,14 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
     }
 
     override fun onDestroyView() {
+        activityViewModel.addressesAdapter.clear()
         super.onDestroyView()
         activity.setOnFragmentKeyBackListener(null)
     }
 
     private fun searchClickSubscribe() {
         activityViewModel.searchPlaceClick.observe(this, Observer {
+            Log.e("tag", "searchClickSubscribe")
             val text = viewDataBinding.placeEdit.text.toString()
             if (placeEditValidate(text)) {
                 activityViewModel.searchPlace(text)
@@ -78,7 +83,6 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
         })
     }
 
-    //TODO("back stack error 해결")
     override fun onBack(stackName: String?) {
         activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }

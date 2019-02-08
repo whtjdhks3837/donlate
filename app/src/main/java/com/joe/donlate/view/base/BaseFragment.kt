@@ -9,9 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import com.joe.donlate.databinding.FragmentMeetingsBinding
-import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_create_meeting.*
 
 abstract class BaseFragment<T: BaseActivity<*>, R: ViewDataBinding> : Fragment() {
     protected lateinit var activity: T

@@ -1,19 +1,18 @@
 package com.joe.donlate.view_model.meetings
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.joe.donlate.data.AddButton
 import com.joe.donlate.data.Address
-import com.joe.donlate.data.Room
+import com.joe.donlate.data.Meeting
 import com.joe.donlate.model.MeetingsRepository
 import com.joe.donlate.util.CREATE_FAILURE_MESSAGE
 import com.joe.donlate.util.SEARCH_NOT_FOUND
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.util.SingleLiveData
-import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view.search_place.list.AddressesAdapter
 import com.joe.donlate.view_model.BaseViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,23 +20,22 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewModel() {
-    private val _rooms = MutableLiveData<LinkedList<Room>>()
-    private val _startCreateMeeting = SingleLiveData<Any>()
+    private val _meetings = MutableLiveData<LinkedList<Meeting>>()
+    private val _createMeetingClick = SingleLiveData<Any>()
+    private val _createMeeting = SingleLiveData<Meeting>()
+    private val _searchPlaceResult = SingleLiveData<List<Address>>()
+
     private val _startSearchPlaceClick = SingleLiveData<Any>()
     private val _searchPlaceClick = SingleLiveData<Any>()
     private val _place = MutableLiveData<String>()
-    private val _createMeetingClick = SingleLiveData<Any>()
-    private val _createMeeting = SingleLiveData<Room>()
-    private val _searchPlaceResult = SingleLiveData<List<Address>>()
 
-    val room: LiveData<LinkedList<Room>> = _rooms
-    val startCreateMeeting: LiveData<Any> = _startCreateMeeting
+    val meetings: LiveData<LinkedList<Meeting>> = _meetings
+    val createMeetingClick: LiveData<Any> = _createMeetingClick
+    val createMeeting: LiveData<Meeting> = _createMeeting
+    val searchPlaceResult: LiveData<List<Address>> = _searchPlaceResult
     val startSearchPlaceClick: LiveData<Any> = _startSearchPlaceClick
     val searchPlaceClick: LiveData<Any> = _searchPlaceClick
     val place: LiveData<String> = _place
-    val createMeetingClick: LiveData<Any> = _createMeetingClick
-    val createMeeting: LiveData<Room> = _createMeeting
-    val searchPlaceResult: LiveData<List<Address>> = _searchPlaceResult
 
     val title = MutableLiveData<String>()
     val year = MutableLiveData<String>()
@@ -49,9 +47,6 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     val penaltyTime = MutableLiveData<String>()
     val penaltyFee = MutableLiveData<String>()
 
-    val meetingsAdapter = MeetingsAdapter(_startCreateMeeting)
-    val addressesAdapter = AddressesAdapter(_place)
-
     fun getMeetings(uuid: String) {
         setProgress(true)
         addDisposable(
@@ -61,12 +56,12 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                 .doOnSubscribe { setProgress(false) }
                 .subscribe({
                     if (!it.isEmpty) {
-                        val rooms = it.toObjects(Room::class.java)
-                        val linkedRooms = LinkedList<Room>()
+                        val rooms = it.toObjects(Meeting::class.java)
+                        val linkedRooms = LinkedList<Meeting>()
                         linkedRooms.addAll(rooms)
-                        _rooms.value = linkedRooms
+                        _meetings.value = linkedRooms
                     } else {
-                        error("방이 없어용 ㅠ")
+                        _meetings.value = LinkedList()
                     }
                 }, {
                     it.printStackTrace()
@@ -75,7 +70,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         )
     }
 
-    fun createMeeting(uuid: String, meeting: Room) {
+    fun createMeeting(uuid: String, meeting: Meeting) {
         setProgress(true)
         addDisposable(
             repository.createMeeting(uuid, meeting)
@@ -86,7 +81,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                     it.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                         documentSnapshot?.let { snapshot ->
                             //Todo single event live data 필요
-                            _createMeeting.value = snapshot.toObject(Room::class.java)
+                            _createMeeting.value = snapshot.toObject(Meeting::class.java)
                         } ?: error(CREATE_FAILURE_MESSAGE)
 
                         firebaseFirestoreException?.let { exception ->
@@ -132,16 +127,15 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         _startSearchPlaceClick.call()
     }
 
-    fun initCreateMeetingLiveData() {
-        _place.value = null
+    fun addRoom(meetingRoom: Meeting) {
+        _meetings.value?.addFirst(meetingRoom)
     }
 
-    fun addRoom(room: Room) {
-        _rooms.value?.addFirst(room)
+    fun setPlace(jibun: String) {
+        _place.value = jibun
     }
 
     fun initCreateMeetingBindingData() {
-        Log.e("tag", "removeMeetingLiveDatas")
         title.value = ""
         year.value = ""
         month.value = ""

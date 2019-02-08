@@ -18,6 +18,7 @@ import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
+import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
 import kotlinx.android.synthetic.main.fragment_meetings.*
 
@@ -26,6 +27,15 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         val instance = MeetingsFragment()
     }
 
+    private val meetingsAdapter = MeetingsAdapter(
+        {
+
+        }, {
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
+                .addToBackStack(MeetingsActivity.FragmentTag.CREATE_MEETING)
+                .commit()
+        })
     override var layoutResource: Int = R.layout.fragment_meetings
     private lateinit var activityViewModel: MeetingsViewModel
 
@@ -40,19 +50,14 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         val view = super.onCreateView(inflater, container, savedInstanceState)
         viewDataBinding.viewModel = activityViewModel
         viewDataBinding.setLifecycleOwner(viewLifecycleOwner)
+        activity.setOnFragmentKeyBackListener(this)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        roomsSubscribe()
-        startCreateMeetingSubscribe()
-    }
-
-    override fun onStart() {
-        super.onStart()
         initViews()
-        activity.setOnFragmentKeyBackListener(this)
+        meetingsObserve()
     }
 
     override fun onDestroyView() {
@@ -61,7 +66,6 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     }
 
     private fun initViews() {
-        //TODO("데이터 읽어오는 로직 변경")
         list.layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
         initProfileImage()
     }
@@ -70,22 +74,11 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         GlideUtil.loadFirebaseStorage(activity, viewDataBinding.profileImage)
     }
 
-    private fun roomsSubscribe() {
-        activityViewModel.room.observe(viewLifecycleOwner, Observer {
-            list.adapter = activityViewModel.meetingsAdapter
-            //TODO("adapter item 동작방식 변경")
-            if (activityViewModel.meetingsAdapter.items != it) {
-                activityViewModel.meetingsAdapter.set(it)
-            }
-        })
-    }
-
-    private fun startCreateMeetingSubscribe() {
-        activity.viewModel.startCreateMeeting.observe(viewLifecycleOwner, Observer {
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
-                .addToBackStack(MeetingsActivity.FragmentTag.CREATE_MEETING)
-                .commit()
+    private fun meetingsObserve() {
+        activityViewModel.meetings.observe(this, Observer {
+            list.adapter = meetingsAdapter
+            meetingsAdapter.set(it)
+            Log.e("tag", "meetingsObserve ${meetingsAdapter.itemCount}")
         })
     }
 

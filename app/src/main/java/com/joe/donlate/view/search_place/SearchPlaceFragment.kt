@@ -17,6 +17,7 @@ import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
+import com.joe.donlate.view.search_place.list.AddressesAdapter
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
 import kotlinx.android.synthetic.main.fragment_search_place.*
 
@@ -27,7 +28,9 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
 
     override var layoutResource: Int = R.layout.fragment_search_place
     private lateinit var activityViewModel: MeetingsViewModel
-
+    private val addressesAdapter by lazy {
+        AddressesAdapter { activityViewModel.setPlace(it) }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
@@ -36,24 +39,21 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         //TODO : EditText clear
-        viewDataBinding.placeEdit.setText("")
-        viewDataBinding.list.apply {
-            layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-            adapter = activityViewModel.addressesAdapter
+        viewDataBinding.apply {
+            list.apply {
+                layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+                adapter = addressesAdapter
+            }
+            viewModel = activityViewModel
         }
-        viewDataBinding.viewModel = activityViewModel
         searchClickSubscribe()
         searchPlaceResultSubscribe()
+        activity.setOnFragmentKeyBackListener(this)
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
-        activity.setOnFragmentKeyBackListener(this)
-    }
-
     override fun onDestroyView() {
-        activityViewModel.addressesAdapter.clear()
+        addressesAdapter.clear()
         super.onDestroyView()
         activity.setOnFragmentKeyBackListener(null)
     }
@@ -62,9 +62,8 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
         activityViewModel.searchPlaceClick.observe(this, Observer {
             Log.e("tag", "searchClickSubscribe")
             val text = viewDataBinding.placeEdit.text.toString()
-            if (placeEditValidate(text)) {
+            if (placeEditValidate(text))
                 activityViewModel.searchPlace(text)
-            }
         })
     }
 
@@ -79,7 +78,7 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
 
     private fun searchPlaceResultSubscribe() {
         activityViewModel.searchPlaceResult.observe(this, Observer {
-            activityViewModel.addressesAdapter.set(it)
+            addressesAdapter.set(it)
         })
     }
 

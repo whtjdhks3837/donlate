@@ -1,5 +1,6 @@
 package com.joe.donlate.view_model.meetings
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,16 +27,20 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     private val _searchPlaceResult = SingleLiveData<List<Address>>()
 
     private val _startSearchPlaceClick = SingleLiveData<Any>()
+    private val _startCreateMeeting = SingleLiveData<Any>()
     private val _searchPlaceClick = SingleLiveData<Any>()
     private val _place = MutableLiveData<String>()
+    private val _placeTmp = MutableLiveData<String>("")
 
     val meetings: LiveData<LinkedList<Meeting>> = _meetings
     val createMeetingClick: LiveData<Any> = _createMeetingClick
     val createMeeting: LiveData<Meeting> = _createMeeting
     val searchPlaceResult: LiveData<List<Address>> = _searchPlaceResult
     val startSearchPlaceClick: LiveData<Any> = _startSearchPlaceClick
+    val startCreateMeeting: LiveData<Any> = _startCreateMeeting
     val searchPlaceClick: LiveData<Any> = _searchPlaceClick
     val place: LiveData<String> = _place
+    val placeTmp: LiveData<String> = _placeTmp
 
     val title = MutableLiveData<String>()
     val year = MutableLiveData<String>()
@@ -127,12 +132,17 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         _startSearchPlaceClick.call()
     }
 
+    fun onSearchPlaceSaveClick(view: View) {
+        _place.value = _placeTmp.value
+        _startCreateMeeting.call()
+    }
+
     fun addRoom(meetingRoom: Meeting) {
         _meetings.value?.addFirst(meetingRoom)
     }
 
-    fun setPlace(jibun: String) {
-        _place.value = jibun
+    fun setPlaceTmp(jibun: String) {
+        _placeTmp.value = jibun
     }
 
     fun initCreateMeetingBindingData() {

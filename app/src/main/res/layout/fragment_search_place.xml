@@ -5,6 +5,9 @@
         <variable
                 name="viewModel"
                 type="com.joe.donlate.view_model.meetings.MeetingsViewModel"/>
+        <variable
+                name="view"
+                type="android.view.View"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,24 +25,46 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/imageView"/>
 
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="완료"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{viewModel::onSearchPlaceSaveClick}"
+                android:visibility='@{viewModel.placeTmp.equals("") ? view.INVISIBLE : view.VISIBLE}'/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="약속장소"
+                android:layout_marginTop="44dp"
+                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                android:id="@+id/textView8"/>
+
         <EditText
                 android:id="@+id/placeEdit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@{null}"
-                app:layout_constraintEnd_toStartOf="@+id/button3"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+                app:layout_constraintTop_toBottomOf="@+id/textView8"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"/>
 
-        <Button
+        <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="검색"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_search"
                 android:id="@+id/button3"
-                android:onClick="@{viewModel::onSearchPlaceClick}"/>
+                android:onClick="@{viewModel::onSearchPlaceClick}"
+                app:layout_constraintTop_toTopOf="@+id/placeEdit"
+                app:layout_constraintBottom_toBottomOf="@+id/placeEdit"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"

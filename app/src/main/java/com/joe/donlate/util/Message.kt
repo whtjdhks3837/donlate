@@ -9,3 +9,4 @@ const val NICKNAME_UPDATE_ERROR_MESSAGE = "닉네임 변경에 실패했습니�
 const val UPDATE_MESSAGE = "변경 되었습니다."
 const val CREATE_FAILURE_MESSAGE = "생성에 실패했습니다. 다시 시도해주세요."
 const val SEARCH_NOT_FOUND = "검색결과가 없습니다"
+const val FORMAT_INVALID = "형식이 잘못됐습니다."

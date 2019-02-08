@@ -15,11 +15,9 @@ import com.joe.donlate.databinding.FragmentSearchPlaceBinding
 import com.joe.donlate.util.toast
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
-import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
 import com.joe.donlate.view.search_place.list.AddressesAdapter
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
-import kotlinx.android.synthetic.main.fragment_search_place.*
 
 class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBinding>(), OnFragmentKeyBackListener {
     companion object {
@@ -29,7 +27,7 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
     override var layoutResource: Int = R.layout.fragment_search_place
     private lateinit var activityViewModel: MeetingsViewModel
     private val addressesAdapter by lazy {
-        AddressesAdapter { activityViewModel.setPlace(it) }
+        AddressesAdapter { activityViewModel.setPlaceTmp(it) }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,22 +43,25 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
                 adapter = addressesAdapter
             }
             viewModel = activityViewModel
+            setLifecycleOwner(viewLifecycleOwner)
         }
-        searchClickSubscribe()
-        searchPlaceResultSubscribe()
         activity.setOnFragmentKeyBackListener(this)
+        searchClickObserve()
+        searchPlaceResultObserve()
+        startCreateMeetingObserve()
         return view
     }
 
     override fun onDestroyView() {
         addressesAdapter.clear()
         super.onDestroyView()
+        activityViewModel.setPlaceTmp("")
         activity.setOnFragmentKeyBackListener(null)
     }
 
-    private fun searchClickSubscribe() {
+    private fun searchClickObserve() {
         activityViewModel.searchPlaceClick.observe(this, Observer {
-            Log.e("tag", "searchClickSubscribe")
+            Log.e("tag", "searchClickObserve")
             val text = viewDataBinding.placeEdit.text.toString()
             if (placeEditValidate(text))
                 activityViewModel.searchPlace(text)
@@ -76,13 +77,22 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
             else -> true
         }
 
-    private fun searchPlaceResultSubscribe() {
+    private fun searchPlaceResultObserve() {
         activityViewModel.searchPlaceResult.observe(this, Observer {
             addressesAdapter.set(it)
         })
     }
 
-    override fun onBack(stackName: String?) {
+    private fun startCreateMeetingObserve() {
+        activityViewModel.startCreateMeeting.observe(this, Observer {
+            startCreateMeeting()
+        })
+    }
+
+    private fun startCreateMeeting() =
         activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+    override fun onBack(stackName: String?) {
+        startCreateMeeting()
     }
 }

@@ -6,15 +6,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:background="@color/colorPrimary"
-            android:onClick="">
+            android:layout_width="match_parent"
+            android:layout_height="94dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/meeting_item_background">
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="등록"
+        <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_plus_white"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

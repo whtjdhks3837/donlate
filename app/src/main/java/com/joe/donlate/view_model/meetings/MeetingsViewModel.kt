@@ -139,7 +139,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
             repository.getMeetings(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { setProgress(false) }
+                .doOnSuccess { setProgress(false) }
                 .subscribe({
                     if (!it.isEmpty) {
                         val rooms = it.toObjects(Meeting::class.java)
@@ -162,7 +162,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
             repository.createMeeting(uuid, meeting)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { setProgress(false) }
+                .doOnSuccess { setProgress(false) }
                 .subscribe({
                     it.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                         documentSnapshot?.let { snapshot ->
@@ -186,7 +186,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         compositeDisposable.add(repository.getAddress(query)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { setProgress(false) }
+            .doOnSuccess { setProgress(false) }
             .subscribe({
                 if (!it.addresses.isEmpty()) {
                     _searchPlaceResult.value = it.addresses

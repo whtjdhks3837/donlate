@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorAppMain">#171717</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorMeetingListItem">#242424</color>
+    <color name="colorDarkSkyBlue">#4392f1</color>
+    <color name="colorPastelRed">#eb5e5b</color>
+    <color name="colorWhite70">#b3ffffff</color>
 </resources>

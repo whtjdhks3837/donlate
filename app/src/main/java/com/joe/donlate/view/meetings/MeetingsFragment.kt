@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joe.donlate.R
 import com.joe.donlate.databinding.FragmentMeetingsBinding
@@ -71,12 +72,7 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     }
 
     private fun initViews() {
-        list.layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
-        initProfileImage()
-    }
-
-    private fun initProfileImage() {
-        GlideUtil.loadFirebaseStorage(activity, viewDataBinding.profileImage)
+        list.layoutManager = LinearLayoutManager(activity)
     }
 
     private fun meetingsSubscribe() {

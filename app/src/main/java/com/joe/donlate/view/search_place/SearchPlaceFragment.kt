@@ -55,13 +55,12 @@ class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBi
     override fun onDestroyView() {
         addressesAdapter.clear()
         super.onDestroyView()
-        activityViewModel.setPlaceTmp("")
+        activityViewModel.setPlaceTmp(null)
         activity.setOnFragmentKeyBackListener(null)
     }
 
     private fun searchClickObserve() {
         activityViewModel.searchPlaceClick.observe(this, Observer {
-            Log.e("tag", "searchClickObserve")
             val text = viewDataBinding.placeEdit.text.toString()
             if (placeEditValidate(text))
                 activityViewModel.searchPlace(text)

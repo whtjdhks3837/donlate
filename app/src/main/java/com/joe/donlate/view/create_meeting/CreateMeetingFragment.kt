@@ -94,9 +94,10 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
     }
 
     private fun placeSubscribe() {
-        //TODO("장소 Live data 삭제")
         activityViewModel.place.observe(this, Observer {
-            viewDataBinding.searchPlace.setText(it)
+            /*it?.let { address ->
+                viewDataBinding.searchPlace.setText(address.jibun)
+            } ?: viewDataBinding.searchPlace.setText()*/
         })
     }
 
@@ -114,12 +115,10 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
                 title = editTitle.text.toString(),
                 createAt = Timestamp.now(),
                 deadLine = Timestamp(
-                    Date(
-                        SimpleDateFormat("yyyy-MM-dd")
-                            .parse("${year.text}-${month.text}-${day.text}").time
-                    )
-                ),
-                coordinate = GeoPoint(10.0, 10.0),
+                    Date(SimpleDateFormat("yyyy-MM-dd").parse("${year.text}-${month.text}-${day.text}").time)),
+                coordinate = GeoPoint(
+                    activityViewModel.place.value!!.lat.toDouble(),
+                    activityViewModel.place.value!!.lon.toDouble()),
                 maxParticipants = maxParticipants.text.toString().toInt(),
                 url = makeUrl(),
                 penaltyTime = penaltyTime.text.toString().toInt(),
@@ -253,13 +252,12 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
         private fun isMinInvalid() = min.text.toString().length != 2
                 || min.text.toString().toInt() !in 0..59
 
-        private fun isDateLesser(): Boolean =
-            getInputTime() <= getCurrentTime()
-
+        private fun isDateLesser(): Boolean = getInputTime() <= getCurrentTime()
         private fun numOfParticipantsValidate() = maxParticipants.text.toString().toInt() > MAX_OF_PARTICIPANTS
         private fun penaltyTimeValidate() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_TIME
         private fun penaltyFeeValidate() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_FEE
         private fun isPlaceEmpty() = searchPlace.text.isEmpty()
+
         private fun getMaxDayOfMonth(): Int {
             val year = year.text.toString().toInt()
             val month = month.text.toString().toInt() - 1
@@ -274,25 +272,24 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
             val day = day.text.toString()
             val hour = hour.text.toString()
             val min = min.text.toString()
-            return SimpleDateFormat("yyyymmddHHmm").parse("$year$month$day$hour$min").time
+            return SimpleDateFormat("yyyyMMddHHmm").parse("$year$month$day$hour$min").time
         }
 
         private fun getCurrentTime(): Long {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR).toString()
-            val month = appendZero(calendar.get(Calendar.MONTH + 1).toString())
+            val month = appendZero((calendar.get(Calendar.MONTH) + 1).toString())
             val day = appendZero(calendar.get(Calendar.DAY_OF_MONTH).toString())
-            val hour = appendZero(calendar.get(Calendar.HOUR).toString())
+            val hour = appendZero(calendar.get(Calendar.HOUR_OF_DAY).toString())
             val min = appendZero(calendar.get(Calendar.MINUTE).toString())
-            return SimpleDateFormat("yyyymmddHHmm").parse("$year$month$day$hour$min").time
+            return SimpleDateFormat("yyyyMMddHHmm").parse("$year$month$day$hour$min").time
         }
 
-        private fun appendZero(month: String) =
-                if (month.length <= 2) {
-                    val convertMonth = "0$month"
-                    convertMonth
-                } else {
-                    month
-                }
+        private fun appendZero(month: String) = when {
+            (month.length < 2) -> "0$month"
+            else -> month
+        }
+
+
     }
 }

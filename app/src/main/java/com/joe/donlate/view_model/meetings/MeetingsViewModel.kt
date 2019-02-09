@@ -29,8 +29,8 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     private val _startSearchPlaceClick = SingleLiveData<Any>()
     private val _startCreateMeeting = SingleLiveData<Any>()
     private val _searchPlaceClick = SingleLiveData<Any>()
-    private val _place = MutableLiveData<String>()
-    private val _placeTmp = MutableLiveData<String>("")
+    private val _place = MutableLiveData<Address?>()
+    private val _placeTmp = MutableLiveData<Address?>()
 
     val meetings: LiveData<LinkedList<Meeting>> = _meetings
     val createMeetingClick: LiveData<Any> = _createMeetingClick
@@ -39,8 +39,8 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     val startSearchPlaceClick: LiveData<Any> = _startSearchPlaceClick
     val startCreateMeeting: LiveData<Any> = _startCreateMeeting
     val searchPlaceClick: LiveData<Any> = _searchPlaceClick
-    val place: LiveData<String> = _place
-    val placeTmp: LiveData<String> = _placeTmp
+    val place: LiveData<Address?> = _place
+    val placeTmp: LiveData<Address?> = _placeTmp
 
     val title = MutableLiveData<String>()
     val year = MutableLiveData<String>()
@@ -109,7 +109,6 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
             .doOnSubscribe { setProgress(false) }
             .subscribe({
                 if (!it.addresses.isEmpty()) {
-                    //TODO : 프래그먼트 이동 시 리스트 삭제
                     _searchPlaceResult.value = it.addresses
                 } else {
                     error(SEARCH_NOT_FOUND)
@@ -117,7 +116,8 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
             }, {
                 it.printStackTrace()
                 error(SERVER_ERROR_MESSAGE)
-            }))
+            })
+        )
     }
 
     fun onSearchPlaceClick(view: View) {
@@ -141,8 +141,8 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         _meetings.value?.addFirst(meetingRoom)
     }
 
-    fun setPlaceTmp(jibun: String) {
-        _placeTmp.value = jibun
+    fun setPlaceTmp(address: Address?) {
+        _placeTmp.value = address
     }
 
     fun initCreateMeetingBindingData() {
@@ -155,7 +155,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         maxParticipants.value = ""
         penaltyTime.value = ""
         penaltyFee.value = ""
-        _place.value = ""
+        _place.value = null
     }
 }
 

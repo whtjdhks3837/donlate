@@ -18,7 +18,7 @@ import java.util.concurrent.CountDownLatch
 class MeetingsInstrumentedMeetingItem {
     private lateinit var context: Context
     private val disposable = CompositeDisposable()
-    private val repository = MeetingsRepositoryImpl()
+//    private val repository = MeetingsRepositoryImpl()
 
     val observable = Maybe.just("status")
         .filter {
@@ -37,7 +37,7 @@ class MeetingsInstrumentedMeetingItem {
     @Test
     fun existJoinRoom() {
         val countDownLatch = CountDownLatch(1)
-        disposable.add(repository.getMeetings("f12851f785162a16")
+        /*disposable.add(repository.getMeetings("f12851f785162a16")
             .subscribe({
                 val room = it.toObjects(Meeting::class.java)
                 assert(!room.isEmpty())
@@ -46,19 +46,19 @@ class MeetingsInstrumentedMeetingItem {
                 it.printStackTrace()
                 countDownLatch.countDown()
             })
-        )
+        )*/
         countDownLatch.await()
     }
 
     @Test
     fun nonExistJoinRoom() {
-        val countDownLatch = CountDownLatch(1)
+        /*val countDownLatch = CountDownLatch(1)
         disposable.add(repository.getMeetings("nonUser")
             .subscribe({
 
             }, {
 
-            }))
+            }))*/
     }
 
     @Test

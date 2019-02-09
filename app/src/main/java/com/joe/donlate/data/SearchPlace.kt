@@ -9,8 +9,8 @@ data class Place(
 )
 
 data class Address(
-    @SerializedName("roadAddress") @Expose val roadAddress: String,
-    @SerializedName("jibunAddress") @Expose val jibunAddress: String,
+    @SerializedName("road") @Expose val road: String,
+    @SerializedName("jibun") @Expose val jibun: String,
     @SerializedName("x") @Expose val lon: String,
     @SerializedName("y") @Expose val lat: String,
     @SerializedName("errorMessage") @Expose val errorMessage: String

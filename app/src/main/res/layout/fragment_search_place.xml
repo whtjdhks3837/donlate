@@ -34,7 +34,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintTop_toTopOf="parent"
                 android:onClick="@{viewModel::onSearchPlaceSaveClick}"
-                android:visibility='@{viewModel.placeTmp.equals("") ? view.INVISIBLE : view.VISIBLE}'/>
+                android:visibility='@{viewModel.place.value != null ? view.VISIBLE : view.INVISIBLE}'/>
 
         <TextView
                 android:layout_width="wrap_content"

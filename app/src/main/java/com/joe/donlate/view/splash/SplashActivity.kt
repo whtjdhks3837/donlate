@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivitySplashBinding
 import com.joe.donlate.util.UuidUtil
-import com.joe.donlate.util.toast
+import com.joe.donlate.util.showToast
 import com.joe.donlate.view.base.BaseActivity
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view.profile.ProfileSettingActivity
@@ -58,7 +58,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private fun errorObserve() {
         viewModel.error.observe(this, Observer { msg ->
             viewModel.setProgress(false)
-            toast(this, msg)
+            showToast(msg)
         })
     }
 }

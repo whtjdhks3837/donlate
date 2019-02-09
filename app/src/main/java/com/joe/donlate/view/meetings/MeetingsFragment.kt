@@ -1,7 +1,6 @@
 package com.joe.donlate.view.meetings
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,8 @@ import com.joe.donlate.view.base.BaseFragment
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
+import com.joe.donlate.view_model.meetings.MeetingsInput
+import com.joe.donlate.view_model.meetings.MeetingsOutput
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
 import kotlinx.android.synthetic.main.fragment_meetings.*
 
@@ -38,11 +39,15 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         })
     override var layoutResource: Int = R.layout.fragment_meetings
     private lateinit var activityViewModel: MeetingsViewModel
+    private lateinit var activityViewModelOutput: MeetingsOutput
+    private lateinit var activityViewModelInput: MeetingsInput
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity.setOnFragmentKeyBackListener(this)
         activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
+        activityViewModelOutput = activityViewModel.meetingsOutput
+        activityViewModelInput = activityViewModel.meetingsInput
         activityViewModel.getMeetings(UuidUtil.getUuid(activity))
     }
 
@@ -57,7 +62,7 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        meetingsObserve()
+        meetingsSubscribe()
     }
 
     override fun onDestroyView() {
@@ -74,11 +79,10 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         GlideUtil.loadFirebaseStorage(activity, viewDataBinding.profileImage)
     }
 
-    private fun meetingsObserve() {
-        activityViewModel.meetings.observe(this, Observer {
+    private fun meetingsSubscribe() {
+        activityViewModelOutput.meetings.observe(this, Observer {
             list.adapter = meetingsAdapter
             meetingsAdapter.set(it)
-            Log.e("tag", "meetingsObserve ${meetingsAdapter.itemCount}")
         })
     }
 

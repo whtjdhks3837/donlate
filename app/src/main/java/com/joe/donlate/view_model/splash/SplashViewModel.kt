@@ -20,7 +20,7 @@ class SplashViewModel(private val repository: SplashRepository) : BaseViewModel(
     val userNotFound: LiveData<Any> = _userNotFound
 
     fun getMyAccount(uuid: String) {
-        addDisposable(
+        compositeDisposable.add(
             repository.getMyAccount(uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

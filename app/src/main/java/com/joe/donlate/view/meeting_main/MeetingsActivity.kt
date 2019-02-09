@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityMeetingsBinding
-import com.joe.donlate.util.toast
+import com.joe.donlate.util.showToast
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseActivity
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
@@ -47,7 +47,7 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
     private fun errorSubscribe() {
         viewModel.error.observe(this, Observer {
             viewModel.setProgress(false)
-            toast(this, it)
+            showToast(it)
         })
     }
 

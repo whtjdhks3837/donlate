@@ -1,7 +1,6 @@
 package com.joe.donlate.view.create_meeting
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +14,13 @@ import com.google.firebase.firestore.model.ResourcePath
 import com.joe.donlate.R
 import com.joe.donlate.data.Meeting
 import com.joe.donlate.databinding.FragmentCreateMeetingBinding
-import com.joe.donlate.util.FORMAT_INVALID
-import com.joe.donlate.util.UuidUtil
-import com.joe.donlate.util.firebaseDatabase
-import com.joe.donlate.util.toast
+import com.joe.donlate.util.*
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
 import com.joe.donlate.view.search_place.SearchPlaceFragment
+import com.joe.donlate.view_model.meetings.CreateMeetingInput
+import com.joe.donlate.view_model.meetings.CreateMeetingOutput
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
 import kotlinx.android.synthetic.main.fragment_create_meeting.*
 import java.text.SimpleDateFormat
@@ -58,11 +56,14 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
 
     override var layoutResource: Int = R.layout.fragment_create_meeting
     private lateinit var activityViewModel: MeetingsViewModel
-    private val calendar by lazy { Calendar.getInstance() }
+    private lateinit var activityViewModelOutput: CreateMeetingOutput
+    private lateinit var activityViewModelInput: CreateMeetingInput
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel = ViewModelProviders.of(activity).get(MeetingsViewModel::class.java)
+        activityViewModelOutput = activityViewModel.createMeetingOutput
+        activityViewModelInput = activityViewModel.createMeetingInput
         activityViewModel.initCreateMeetingBindingData()
     }
 
@@ -73,11 +74,9 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
             setLifecycleOwner(viewLifecycleOwner)
         }
         activity.setOnFragmentKeyBackListener(this)
-        createMeetingSubscribe()
         createMeetingClickSubscribe()
-        placeSubscribe()
-        startSearchPlaceClickSubscribe()
-        Log.e("tag", "${SimpleDateFormat("yyyy-MM-dd").parse("2019-01-11").time}")
+        startMeetingsFragmentSubscribe()
+        startSearchPlaceFragmentSubscribe()
         return view
     }
 
@@ -86,23 +85,8 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
         activity.setOnFragmentKeyBackListener(null)
     }
 
-    private fun createMeetingSubscribe() {
-        activityViewModel.createMeeting.observe(this, Observer {
-            activityViewModel.addRoom(it)
-            activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        })
-    }
-
-    private fun placeSubscribe() {
-        activityViewModel.place.observe(this, Observer {
-            /*it?.let { address ->
-                viewDataBinding.searchPlace.setText(address.jibun)
-            } ?: viewDataBinding.searchPlace.setText()*/
-        })
-    }
-
     private fun createMeetingClickSubscribe() {
-        activityViewModel.createMeetingClick.observe(this, Observer {
+        activityViewModelOutput.createMeeting.observe(this, Observer {
             makeMeetingRoom()?.let { meetingRoom ->
                 activityViewModel.createMeeting(UuidUtil.getUuid(activity), meetingRoom)
             }
@@ -115,10 +99,10 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
                 title = editTitle.text.toString(),
                 createAt = Timestamp.now(),
                 deadLine = Timestamp(
-                    Date(SimpleDateFormat("yyyy-MM-dd").parse("${year.text}-${month.text}-${day.text}").time)),
+                    Date(DateConvertor().getInputTime())),
                 coordinate = GeoPoint(
-                    activityViewModel.place.value!!.lat.toDouble(),
-                    activityViewModel.place.value!!.lon.toDouble()),
+                    activityViewModelOutput.place.value!!.lat.toDouble(),
+                    activityViewModelOutput.place.value!!.lon.toDouble()),
                 maxParticipants = maxParticipants.text.toString().toInt(),
                 url = makeUrl(),
                 penaltyTime = penaltyTime.text.toString().toInt(),
@@ -136,8 +120,15 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
 
     private fun makeUrl() = "testurl"
 
-    private fun startSearchPlaceClickSubscribe() {
-        activityViewModel.startSearchPlaceClick.observe(viewLifecycleOwner, Observer {
+    private fun startMeetingsFragmentSubscribe() {
+        activityViewModelOutput.startMeetingsFragment.observe(viewLifecycleOwner, Observer {
+            popBackStack()
+        })
+    }
+
+    private fun startSearchPlaceFragmentSubscribe() {
+        activityViewModelOutput.startSearchPlaceFragment.observe(viewLifecycleOwner, Observer {
+            activityViewModel.setPlace(null)
             activity.supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment, SearchPlaceFragment.instance, MeetingsActivity.FragmentTag.SEARCH_PLACE)
                 .addToBackStack(MeetingsActivity.FragmentTag.SEARCH_PLACE)
@@ -146,85 +137,87 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
     }
 
     override fun onBack(stackName: String?) {
-        activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        popBackStack()
     }
+
+    private fun popBackStack() = activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
     inner class CreateValidator {
         fun validate() = when {
             isTitleEmpty() -> {
-                toast(activity, TITLE_EMPTY)
+                activity.showToast(TITLE_EMPTY)
                 false
             }
             isYearEmpty() -> {
-                toast(activity, YEAR_EMPTY)
+                activity.showToast(YEAR_EMPTY)
                 false
             }
             isYearInvalid() -> {
-                toast(activity, YEAR_FORMAT_INVALID)
+                activity.showToast(YEAR_FORMAT_INVALID)
                 false
             }
             isMonthEmpty() -> {
-                toast(activity, MONTH_EMPTY)
+                activity.showToast(MONTH_EMPTY)
                 false
             }
             isMonthInvalid() -> {
-                toast(activity, MONTH_FORMAT_INVALID)
+                activity.showToast(MONTH_FORMAT_INVALID)
                 false
             }
             isDayEmpty() -> {
-                toast(activity, DAY_EMPTY)
+                activity.showToast(DAY_EMPTY)
                 false
             }
             isDayInvalid() -> {
-                toast(activity, DAY_FORMAT_INVALID)
+                activity.showToast(DAY_FORMAT_INVALID)
                 false
             }
             isHourEmpty() -> {
-                toast(activity, HOUR_EMPTY)
+                activity.showToast(HOUR_EMPTY)
                 false
             }
             isHourInvalid() -> {
-                toast(activity, HOUR_FORMAT_INVALID)
+                activity.showToast(HOUR_FORMAT_INVALID)
                 false
             }
             isMinEmpty() -> {
-                toast(activity, MIN_EMPTY)
+                activity.showToast(MIN_EMPTY)
                 false
             }
             isMinInvalid() -> {
-                toast(activity, MIN_FORMAT_INVALID)
+                activity.showToast(MIN_FORMAT_INVALID)
                 false
             }
             isNumOfParticipantsEmpty() -> {
-                toast(activity, PARTICIPANTS_NUM_EMPTY)
+                activity.showToast(PARTICIPANTS_NUM_EMPTY)
                 false
             }
             numOfParticipantsValidate() -> {
-                toast(activity, PARTICIPANTS_MAX_OVER)
+                activity.showToast(PARTICIPANTS_MAX_OVER)
                 false
             }
             isPenaltyTimeEmpty() -> {
-                toast(activity, PENALTY_TIME_EMPTY)
+                activity.showToast(PENALTY_TIME_EMPTY)
                 false
             }
             penaltyTimeValidate() -> {
-                toast(activity, PENALTY_TIME_OVER)
+                activity.showToast(PENALTY_TIME_OVER)
                 false
             }
             isPenaltyFeeEmpty() -> {
-                toast(activity, PENALTY_FEE_EMPTY)
+                activity.showToast(PENALTY_FEE_EMPTY)
                 false
             }
             penaltyFeeValidate() -> {
-                toast(activity, PENALTY_FEE_OVER)
+                activity.showToast(PENALTY_FEE_OVER)
                 false
             }
             isDateLesser() -> {
-                toast(activity, DATE_LESSER)
+                activity.showToast(DATE_LESSER)
                 false
             }
             isPlaceEmpty() -> {
-                toast(activity, PLACE_NOT_FOUND)
+                activity.showToast(PLACE_NOT_FOUND)
                 false
             }
             else -> true
@@ -252,7 +245,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
         private fun isMinInvalid() = min.text.toString().length != 2
                 || min.text.toString().toInt() !in 0..59
 
-        private fun isDateLesser(): Boolean = getInputTime() <= getCurrentTime()
+        private fun isDateLesser(): Boolean = DateConvertor().getInputTime() <= DateConvertor().getCurrentTime()
         private fun numOfParticipantsValidate() = maxParticipants.text.toString().toInt() > MAX_OF_PARTICIPANTS
         private fun penaltyTimeValidate() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_TIME
         private fun penaltyFeeValidate() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_FEE
@@ -265,8 +258,10 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
             calendar.set(year, month, Calendar.DAY_OF_MONTH)
             return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         }
+    }
 
-        private fun getInputTime(): Long {
+    inner class DateConvertor {
+        fun getInputTime(): Long {
             val year = year.text.toString()
             val month = month.text.toString()
             val day = day.text.toString()
@@ -275,7 +270,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
             return SimpleDateFormat("yyyyMMddHHmm").parse("$year$month$day$hour$min").time
         }
 
-        private fun getCurrentTime(): Long {
+        fun getCurrentTime(): Long {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR).toString()
             val month = appendZero((calendar.get(Calendar.MONTH) + 1).toString())
@@ -289,7 +284,5 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
             (month.length < 2) -> "0$month"
             else -> month
         }
-
-
     }
 }

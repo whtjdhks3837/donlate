@@ -25,7 +25,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:onClick="@{viewModel::onCreateMeetingClick}"/>
+                android:onClick="@{(v) -> viewModel.createMeetingInput.createMeetingClick()}"/>
 
         <TextView
                 android:id="@+id/text1"
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="약속의 이름을 입력해주세요."
-                android:text="@={viewModel.title}"
+                android:text="@={viewModel.createMeetingOutput.title}"
                 android:inputType="text"
                 android:singleLine="true"
                 android:maxLength="15"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="2019"
-                android:text="@={viewModel.year}"
+                android:text="@={viewModel.createMeetingOutput.year}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="02"
-                android:text="@={viewModel.month}"
+                android:text="@={viewModel.createMeetingOutput.month}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -122,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="01"
-                android:text="@={viewModel.day}"
+                android:text="@={viewModel.createMeetingOutput.day}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -160,7 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="10"
-                android:text="@={viewModel.hour}"
+                android:text="@={viewModel.createMeetingOutput.hour}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -188,7 +188,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="10"
-                android:text="@={viewModel.min}"
+                android:text="@={viewModel.createMeetingOutput.min}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -225,7 +225,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="2"
-                android:text="@={viewModel.maxParticipants}"
+                android:text="@={viewModel.createMeetingOutput.maxParticipants}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -263,7 +263,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="1"
-                android:text="@={viewModel.penaltyTime}"
+                android:text="@={viewModel.createMeetingOutput.penaltyTime}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -290,7 +290,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="1,000"
-                android:text="@={viewModel.penaltyFee}"
+                android:text="@={viewModel.createMeetingOutput.penaltyFee}"
                 android:textColor="@color/colorBlack"
                 android:textSize="30sp"
                 android:inputType="numberDecimal"
@@ -333,8 +333,8 @@
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:onClick="@{viewModel::onStartSearchPlaceClick}"
-                android:text='@{viewModel.place.value != null ? viewModel.place.value.jibun : ""}'/>
+                android:onClick="@{(v) -> viewModel.createMeetingInput.startSearchPlaceFragmentClick()}"
+                android:text='@{viewModel.createMeetingOutput.place != null ? viewModel.createMeetingOutput.place.jibun : ""}'/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

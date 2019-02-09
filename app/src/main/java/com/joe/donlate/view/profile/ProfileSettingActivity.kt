@@ -70,18 +70,18 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun nameValidate(name: String): Boolean {
         viewModel.name.value?.let {
             if (it == name) {
-                toast(this, "변경사항이 없습니다.")
+                showToast("변경사항이 없습니다.")
                 return false
             }
         }
         return when {
             name == "" -> {
-                toast(this, "이름이 공백입니다.")
+                showToast("이름이 공백입니다.")
                 false
             }
 
             name.length !in 2..6 -> {
-                toast(this, "2자에서 6자 사이로 입력해주세요..")
+                showToast("2자에서 6자 사이로 입력해주세요.")
                 false
             }
             else -> true
@@ -91,7 +91,7 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun errorObserve() {
         viewModel.error.observe(this, Observer {
             viewModel.setClickable(true)
-            toast(this, it)
+            showToast(it)
         })
     }
 
@@ -106,7 +106,7 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun nameObserve() {
         viewModel.updateName.observe(this, Observer {
             viewModel.setClickable(true)
-            toast(this, UPDATE_MESSAGE)
+            showToast(UPDATE_MESSAGE)
         })
     }
 
@@ -133,8 +133,8 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
                 bitmap?.let {
                     viewModel.setProgress(true)
                     viewModel.updateImage(UuidUtil.getUuid(this), it)
-                } ?: toast(this, "이미지를 불러오지 못했습니다.")
-            } ?: toast(this, "이미지를 불러오지 못했습니다.")
+                } ?: showToast("이미지를 불러오지 못했습니다.")
+            } ?: showToast("이미지를 불러오지 못했습니다.")
         }
     }
 

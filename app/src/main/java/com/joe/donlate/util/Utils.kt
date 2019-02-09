@@ -27,7 +27,6 @@ import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 
 const val FIRESTORAGE_URL = "gs://donlate-66efb.appspot.com/"
-
 val firebaseAuth = FirebaseAuth.getInstance()
 val firebaseDatabase = FirebaseFirestore.getInstance()
 val firebaseStorage = FirebaseStorage.getInstance(FIRESTORAGE_URL)

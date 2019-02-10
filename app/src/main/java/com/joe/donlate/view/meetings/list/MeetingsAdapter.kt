@@ -1,27 +1,34 @@
 package com.joe.donlate.view.meetings.list
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
-import com.google.firebase.Timestamp
+import androidx.core.content.ContextCompat
+import com.joe.donlate.R
 import com.joe.donlate.data.AddButton
 import com.joe.donlate.data.MeetingItem
 import com.joe.donlate.data.Meeting
 import com.joe.donlate.databinding.ListMeetingAddItemBinding
 import com.joe.donlate.databinding.ListMeetingItemBinding
+import com.joe.donlate.util.firebaseAuth
 import com.joe.donlate.view.base.BaseHolder
 import com.joe.donlate.view.base.MutableListAdapter
-import java.lang.Exception
+import com.joe.donlate.view.meeting_main.MeetingsActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MeetingsAdapter(private val meetingClick: (meeting: Meeting) -> Unit, private val addClick: () -> Unit) :
-    MutableListAdapter<MeetingItem, BaseHolder<MeetingItem>>() {
+class MeetingsAdapter(
+    private val meetingClick: (meeting: Meeting) -> Unit,
+    private val meetingLongClick: (view: View) -> Unit,
+    private val addClick: () -> Unit
+) : MutableListAdapter<MeetingItem, BaseHolder<MeetingItem>>() {
     companion object {
         private const val ROOM_VIEW_TYPE = 0
         private const val ADD_VIEW_TYPE = 1
     }
-
     override val items: LinkedList<MeetingItem> = LinkedList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<MeetingItem> =
@@ -31,8 +38,7 @@ class MeetingsAdapter(private val meetingClick: (meeting: Meeting) -> Unit, priv
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                ),
-                meetingClick
+                ), meetingClick, meetingLongClick
             )
             else -> AddHolder(
                 ListMeetingAddItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
@@ -58,16 +64,37 @@ class MeetingsAdapter(private val meetingClick: (meeting: Meeting) -> Unit, priv
 
 class MeetingsHolder(
     private val binding: ListMeetingItemBinding,
-    private val meetingClick: (meeting: Meeting) -> Unit
-) :
-    BaseHolder<MeetingItem>(binding) {
+    private val meetingClick: (meeting: Meeting) -> Unit,
+    private val longClick: (view: View) -> Unit
+) : BaseHolder<MeetingItem>(binding) {
+    companion object {
+        private const val NORMAL_MODE = 0x01
+        private const val DELETE_MODE = 0x02
+        private var mode = NORMAL_MODE
+    }
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     override fun bind(data: MeetingItem) {
         data as Meeting
         val time = SimpleDateFormat("hh:mm").format(data.deadLine.toDate())
         val date = SimpleDateFormat("yyyy.MM.dd").format(data.deadLine.toDate())
-        itemView.setOnClickListener {
-            meetingClick(data)
+        itemView.setOnTouchListener { v, event ->
+            when {
+                event.action == MotionEvent.ACTION_DOWN -> {
+                    v.background = ContextCompat.getDrawable(binding.root.context, R.drawable.meeting_item_touch_background)
+                    Log.e("tag", "ACTION_DOWN")
+                }
+                event.action == MotionEvent.ACTION_UP -> {
+                    v.background = ContextCompat.getDrawable(binding.root.context, R.drawable.meeting_item_background)
+                    Log.e("tag", "ACTION_UP")
+                    meetingClick(data)
+                }
+            }
+            false
+        }
+        itemView.setOnLongClickListener {
+            Log.e("tag", "LONGCLICK")
+            longClick(itemView)
+            false
         }
         binding.title.text = data.title
         binding.time.text = timeConvert(time)
@@ -91,10 +118,12 @@ class MeetingsHolder(
     }
 
     private fun minConvert(min: String) =
-            when {
-                min.length == 1 -> { "0$min" }
-                else -> min
+        when {
+            min.length == 1 -> {
+                "0$min"
             }
+            else -> min
+        }
 }
 
 class AddHolder(private val binding: ListMeetingAddItemBinding, private val addClick: () -> Unit) :

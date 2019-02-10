@@ -192,7 +192,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
                 activity.showToast(PARTICIPANTS_NUM_EMPTY)
                 false
             }
-            numOfParticipantsValidate() -> {
+            isMaxOfParticipantsBigger() -> {
                 activity.showToast(PARTICIPANTS_MAX_OVER)
                 false
             }
@@ -200,7 +200,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
                 activity.showToast(PENALTY_TIME_EMPTY)
                 false
             }
-            penaltyTimeValidate() -> {
+            isPenaltyTimeBigger() -> {
                 activity.showToast(PENALTY_TIME_OVER)
                 false
             }
@@ -208,7 +208,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
                 activity.showToast(PENALTY_FEE_EMPTY)
                 false
             }
-            penaltyFeeValidate() -> {
+            isPenaltyFeeBigger() -> {
                 activity.showToast(PENALTY_FEE_OVER)
                 false
             }
@@ -246,9 +246,9 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
                 || min.text.toString().toInt() !in 0..59
 
         private fun isDateLesser(): Boolean = DateConvertor().getInputTime() <= DateConvertor().getCurrentTime()
-        private fun numOfParticipantsValidate() = maxParticipants.text.toString().toInt() > MAX_OF_PARTICIPANTS
-        private fun penaltyTimeValidate() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_TIME
-        private fun penaltyFeeValidate() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_FEE
+        private fun isMaxOfParticipantsBigger() = maxParticipants.text.toString().toInt() > MAX_OF_PARTICIPANTS
+        private fun isPenaltyTimeBigger() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_TIME
+        private fun isPenaltyFeeBigger() = penaltyTime.text.toString().toInt() > MAX_OF_PENALTY_FEE
         private fun isPlaceEmpty() = searchPlace.text.isEmpty()
 
         private fun getMaxDayOfMonth(): Int {

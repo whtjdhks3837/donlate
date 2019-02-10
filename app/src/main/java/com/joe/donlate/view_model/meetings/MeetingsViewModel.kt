@@ -21,11 +21,13 @@ import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 interface MeetingsInput : Input {
-
+    fun meetingClick()
+    fun meetingLongClick()
 }
 
 interface MeetingsOutput : Output {
     val meetings: LiveData<LinkedList<Meeting>>
+    val meetingLongClick: LiveData<Boolean>
 }
 
 interface CreateMeetingInput : Input {
@@ -61,9 +63,9 @@ interface SearchPlaceOutput : Output {
     val searchPlaceResult: LiveData<List<Address>>
 }
 
-
 class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewModel() {
     private val _meetings = MutableLiveData<LinkedList<Meeting>>()
+    private val _meetingLongClick = SingleLiveData<Boolean>()
 
     private val _createMeeting = SingleLiveData<Meeting>()
     private val _startSearchPlaceFragment = SingleLiveData<Any>()
@@ -80,11 +82,18 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     private val searchPlaceClick = PublishSubject.create<Any>()
 
     val meetingsInput = object : MeetingsInput {
+        override fun meetingClick() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
 
+        override fun meetingLongClick() {
+            _meetingLongClick.value = true
+        }
     }
 
     val meetingsOutput = object : MeetingsOutput {
         override val meetings: LiveData<LinkedList<Meeting>> = _meetings
+        override val meetingLongClick: LiveData<Boolean> = _meetingLongClick
     }
 
     val createMeetingInput = object : CreateMeetingInput {

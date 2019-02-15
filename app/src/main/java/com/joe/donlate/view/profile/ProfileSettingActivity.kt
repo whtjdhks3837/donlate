@@ -23,23 +23,19 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        init()
-        getMyAccount()
-    }
-
-    private fun init() {
         userObserve()
         nameObserve()
         errorObserve()
         startMeetingsClickObserve()
         imageClickObserve()
         updateNameClickObserve()
-        startMettingsActivityObserve()
+        startMeetingsActivityObserve()
 
+        getMyAccount()
         viewDataBinding.viewModel = viewModel
         viewDataBinding.setLifecycleOwner(this)
     }
+
 
     private fun startMeetingsClickObserve() {
         viewModel.startMeetingsClick.observe(this, Observer {
@@ -110,7 +106,7 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
         })
     }
 
-    private fun startMettingsActivityObserve() {
+    private fun startMeetingsActivityObserve() {
         viewModel.startMeetingsActivity.observe(this, Observer {
             startActivity(Intent(this, MeetingsActivity::class.java))
             finish()

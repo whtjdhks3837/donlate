@@ -4,9 +4,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
 
-
-sealed class MeetingItem
-
 data class Meeting(
     @Transient val title: String = "",
     @Transient val createAt: Timestamp = Timestamp.now(),
@@ -17,14 +14,4 @@ data class Meeting(
     @Transient val penaltyTime: Int = 0,
     @Transient val penaltyFee: Int = 0,
     @Transient val coordinate: GeoPoint = GeoPoint(0.0, 0.0)
-) : MeetingItem()
-
-class AddButton : MeetingItem() {
-    override fun equals(other: Any?): Boolean {
-        return this === other
-    }
-
-    override fun hashCode(): Int {
-        return System.identityHashCode(this)
-    }
-}
+)

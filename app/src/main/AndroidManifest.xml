@@ -17,16 +17,16 @@
             android:theme="@style/AppTheme"
             android:name=".DonLateApplication">
         <activity android:name=".view.splash.SplashActivity">
-        </activity>
-        <activity android:name=".view.profile.ProfileSettingActivity">
-        </activity>
-        <activity android:name=".view.meeting_main.MeetingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".view.profile.ProfileSettingActivity">
+        </activity>
+        <activity android:name=".view.meeting_main.MeetingsActivity">
         </activity>
         <uses-library android:name="android.test.base"
                       android:required="false" />

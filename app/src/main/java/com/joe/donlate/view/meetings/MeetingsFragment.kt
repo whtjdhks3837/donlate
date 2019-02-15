@@ -6,9 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -33,17 +30,12 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     }
 
     private val meetingsAdapter = MeetingsAdapter(
-        { //touch
+        {
+            //touch
             Log.e("tag", "touch")
         },
-        { view ->
+        {
             activityViewModel.meetingsInput.meetingLongClick()
-        },
-        { //addClick
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
-                .addToBackStack(MeetingsActivity.FragmentTag.CREATE_MEETING)
-                .commit()
         })
     override var layoutResource: Int = R.layout.fragment_meetings
     private lateinit var activityViewModel: MeetingsViewModel
@@ -71,8 +63,15 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         super.onViewCreated(view, savedInstanceState)
         initViews()
         setProfileClickListener()
-        meetingsSubscribe()
-        meetingLongClickSubscribe()
+        meetingsObserve()
+        meetingLongClickObserve()
+
+        meetingAdd.setOnClickListener {
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment, CreateMeetingFragment.instance, MeetingsActivity.FragmentTag.CREATE_MEETING)
+                .addToBackStack(MeetingsActivity.FragmentTag.CREATE_MEETING)
+                .commit()
+        }
     }
 
     override fun onDestroyView() {
@@ -90,20 +89,16 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         }
     }
 
-    private fun meetingsSubscribe() {
+    private fun meetingsObserve() {
         activityViewModelOutput.meetings.observe(this, Observer {
             list.adapter = meetingsAdapter
             meetingsAdapter.set(it)
         })
     }
 
-    private fun meetingLongClickSubscribe() {
+    private fun meetingLongClickObserve() {
         activityViewModelOutput.meetingLongClick.observe(this, Observer {
-            Log.e("tag", "meetingLongClickSubscribe")
-            val params = list.layoutParams as ConstraintLayout.LayoutParams
-            params.startToStart = deleteModelGuideline.id
-            params.endToEnd = root.id
-            list.requestLayout()
+
         })
     }
 

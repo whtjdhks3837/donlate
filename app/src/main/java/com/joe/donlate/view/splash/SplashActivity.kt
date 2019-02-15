@@ -9,6 +9,7 @@ import com.joe.donlate.databinding.ActivitySplashBinding
 import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.util.showToast
 import com.joe.donlate.view.base.BaseActivity
+import com.joe.donlate.view.meeting_main.MeetingsActivity
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view.profile.ProfileSettingActivity
 import com.joe.donlate.view_model.splash.SplashViewModel
@@ -28,28 +29,20 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         userObserve()
         userNotFoundObserve()
         errorObserve()
-        getMyAccount(UuidUtil.getUuid(this))
-
+        viewModel.getMyAccount(UuidUtil.getUuid(this))
         viewDataBinding.viewModel = viewModel
         viewDataBinding.setLifecycleOwner(this)
     }
 
-    private fun getMyAccount(uuid: String) {
-        viewModel.setProgress(true)
-        viewModel.getMyAccount(uuid)
-    }
-
     private fun userObserve() {
         viewModel.user.observe(this, Observer {
-            viewModel.setProgress(false)
-            startActivity(Intent(this, MeetingsAdapter::class.java))
+            startActivity(Intent(this, MeetingsActivity::class.java))
             finish()
         })
     }
 
     private fun userNotFoundObserve() {
         viewModel.userNotFound.observe(this, Observer {
-            viewModel.setProgress(false)
             startActivity(Intent(this, ProfileSettingActivity::class.java))
             finish()
         })
@@ -57,7 +50,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     private fun errorObserve() {
         viewModel.error.observe(this, Observer { msg ->
-            viewModel.setProgress(false)
             showToast(msg)
         })
     }

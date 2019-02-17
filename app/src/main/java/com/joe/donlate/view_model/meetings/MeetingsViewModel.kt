@@ -165,6 +165,10 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         )
     }
 
+    fun leaveMeetings(vararg urls: String) {
+
+    }
+
     fun createMeeting(uuid: String, meeting: Meeting) {
         setProgress(true)
         compositeDisposable.add(

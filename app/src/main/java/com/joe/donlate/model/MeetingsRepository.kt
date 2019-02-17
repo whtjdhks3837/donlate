@@ -10,6 +10,7 @@ import io.reactivex.Single
 
 interface MeetingsRepository {
     fun getMeetings(uuid: String): Single<QuerySnapshot>
+    fun leaveMeetings(vararg urls: String): Single<QuerySnapshot>
     fun createMeeting(uuid: String, meeting: Meeting): Single<DocumentReference>
     fun getAddress(query: String, count: Int = 20): Single<Place>
 }
@@ -27,6 +28,14 @@ class MeetingsRepositoryImpl(private val naverMapService: NaverMapService) : Mee
                     emitter.onError(Exception())
                 }
         }
+
+    override fun leaveMeetings(vararg urls: String): Single<QuerySnapshot> =
+        Single.create {
+            firebaseDatabase.collection("meetings")
+                .whereArrayContains("url", urls)
+                .get()
+        }
+
 
     override fun createMeeting(uuid: String, meeting: Meeting): Single<DocumentReference> =
         Single.create { emitter ->

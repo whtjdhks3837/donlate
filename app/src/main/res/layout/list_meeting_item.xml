@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -11,105 +12,128 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="94dp"
-            android:background="@drawable/meeting_item_background"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp">
+            android:layout_height="114dp">
 
-        <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="디프만 스터디"
-                android:textSize="20sp"
-                android:textColor="@color/colorWhite80"
-                app:layout_constraintBottom_toTopOf="@+id/guideline4"
-                app:layout_constraintTop_toTopOf="@+id/time"
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="94dp"
+                android:background="@drawable/meeting_item_background"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="16dp"
-                app:layout_constraintVertical_bias="0.4"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="오후 2:00"
-                android:textColor="@color/colorWhite"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/guideline4"
-                android:id="@+id/time"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="20dp"
+                android:id="@+id/meeting">
 
-        <androidx.constraintlayout.widget.Guideline
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.55"
-                android:id="@+id/guideline4"/>
+            <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="디프만 스터디"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorWhite80"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline4"
+                    app:layout_constraintTop_toTopOf="@+id/time"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintVertical_bias="0.4"/>
 
-        <TextView
-                android:id="@+id/penaltyTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintStart_toStartOf="@+id/title"
-                android:text="10분"
-                android:textColor="@color/colorDarkSkyBlue"
-                android:textSize="12sp"
-                android:paddingStart="7dp"
-                android:paddingEnd="7dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:background="@drawable/text_view_bolder_dakr_sky_blue"
-                app:layout_constraintTop_toTopOf="@+id/guideline4"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="오후 2:00"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline4"
+                    android:id="@+id/time"/>
 
-        <TextView
-                android:id="@+id/penaltyFee"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="500원"
-                android:textColor="@color/colorDarkSkyBlue"
-                android:textSize="12sp"
-                android:paddingStart="7dp"
-                android:paddingEnd="7dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:background="@drawable/text_view_bolder_dakr_sky_blue"
-                app:layout_constraintStart_toEndOf="@+id/penaltyTime"
-                app:layout_constraintTop_toTopOf="@+id/guideline4"/>
+            <androidx.constraintlayout.widget.Guideline
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.55"
+                    android:id="@+id/guideline4"/>
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3/8"
-                android:textSize="12sp"
-                android:textColor="@color/colorPastelRed"
-                android:paddingStart="7dp"
-                android:paddingEnd="7dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:background="@drawable/text_view_bolder_pastel_red"
-                app:layout_constraintStart_toEndOf="@+id/penaltyFee"
-                android:layout_marginStart="8dp"
-                app:layout_constraintTop_toTopOf="@+id/guideline4"
-                android:id="@+id/numOfParticipants"/>
+            <TextView
+                    android:id="@+id/penaltyTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintStart_toStartOf="@+id/title"
+                    android:text="10분"
+                    android:textColor="@color/colorDarkSkyBlue"
+                    android:textSize="12sp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:background="@drawable/text_view_bolder_dakr_sky_blue"
+                    app:layout_constraintTop_toTopOf="@+id/guideline4"/>
 
-        <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2019.02.15"
-                android:textColor="@color/colorWhite70"
-                android:textSize="13sp"
-                android:alpha="0.7"
-                app:layout_constraintEnd_toEndOf="@+id/time"
-                app:layout_constraintBottom_toBottomOf="@+id/numOfParticipants"/>
+            <TextView
+                    android:id="@+id/penaltyFee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="500원"
+                    android:textColor="@color/colorDarkSkyBlue"
+                    android:textSize="12sp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:background="@drawable/text_view_bolder_dakr_sky_blue"
+                    app:layout_constraintStart_toEndOf="@+id/penaltyTime"
+                    app:layout_constraintTop_toTopOf="@+id/guideline4"/>
 
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3/8"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorPastelRed"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:background="@drawable/text_view_bolder_pastel_red"
+                    app:layout_constraintStart_toEndOf="@+id/penaltyFee"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintTop_toTopOf="@+id/guideline4"
+                    android:id="@+id/numOfParticipants"/>
+
+            <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2019.02.15"
+                    android:textColor="@color/colorWhite70"
+                    android:textSize="13sp"
+                    android:alpha="0.7"
+                    app:layout_constraintEnd_toEndOf="@+id/time"
+                    app:layout_constraintBottom_toBottomOf="@+id/numOfParticipants"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <CheckBox
+                android:id="@+id/leave"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_btn_delete_nor_black"
+                android:button="@null"
+                app:layout_constraintStart_toStartOf="@+id/meeting"
+                app:layout_constraintEnd_toStartOf="@+id/meeting"
+                app:layout_constraintTop_toTopOf="@+id/meeting"
+                app:layout_constraintBottom_toTopOf="@+id/meeting"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                android:checked="false"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

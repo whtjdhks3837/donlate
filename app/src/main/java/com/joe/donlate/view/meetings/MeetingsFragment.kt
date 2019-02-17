@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,6 +18,9 @@ import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
+import com.joe.donlate.view.meetings.list.MeetingItemDelete
+import com.joe.donlate.view.meetings.list.MeetingItemMode
+import com.joe.donlate.view.meetings.list.MeetingItemNormal
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view.profile.ProfileSettingActivity
 import com.joe.donlate.view_model.meetings.MeetingsInput
@@ -35,12 +39,15 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
             Log.e("tag", "touch")
         },
         {
-            activityViewModel.meetingsInput.meetingLongClick()
+            setMeetingsAdapterMode(MeetingItemDelete)
         })
     override var layoutResource: Int = R.layout.fragment_meetings
     private lateinit var activityViewModel: MeetingsViewModel
     private lateinit var activityViewModelOutput: MeetingsOutput
     private lateinit var activityViewModelInput: MeetingsInput
+    private val deleteModeAnimation by lazy {
+        AnimationUtils.loadAnimation(activity, R.anim.meeting_delete_mode_anim)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +79,13 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
                 .addToBackStack(MeetingsActivity.FragmentTag.CREATE_MEETING)
                 .commit()
         }
+
+        leave.setOnClickListener { _ ->
+            meetingsAdapter.items.filter { it.isWaitLeave }
+                .forEach {
+                    Log.e("tag", it.title)
+                }
+        }
     }
 
     override fun onDestroyView() {
@@ -98,8 +112,22 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
 
     private fun meetingLongClickObserve() {
         activityViewModelOutput.meetingLongClick.observe(this, Observer {
-
+            list.animation = AnimationUtils.loadAnimation(activity, R.anim.meeting_delete_mode_anim)
         })
+    }
+
+    private fun setMeetingsAdapterMode(mode: MeetingItemMode) {
+        when (mode) {
+            is MeetingItemNormal -> {
+
+            }
+            is MeetingItemDelete -> {
+                list.startAnimation(deleteModeAnimation)
+                meetingAdd.visibility = View.GONE
+                leave.visibility = View.VISIBLE
+            }
+        }
+        meetingsAdapter.setMode(mode)
     }
 
     override fun onBack(stackName: String?) {

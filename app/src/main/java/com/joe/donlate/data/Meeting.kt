@@ -13,5 +13,6 @@ data class Meeting(
     @Transient val url: String = "",
     @Transient val penaltyTime: Int = 0,
     @Transient val penaltyFee: Int = 0,
-    @Transient val coordinate: GeoPoint = GeoPoint(0.0, 0.0)
+    @Transient val coordinate: GeoPoint = GeoPoint(0.0, 0.0),
+    var isWaitLeave: Boolean = false
 )

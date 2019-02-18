@@ -60,8 +60,8 @@ class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {
     }
 
     override fun onBackPressed() {
-        supportFragmentManager.fragments.find { it.isVisible && it.tag == FragmentTag.MEETINGS }
-            ?.let { finish() }
+        /*supportFragmentManager.fragments.find { it.isVisible && it.tag == FragmentTag.MEETINGS }
+            ?.let { finish() }*/
         supportFragmentManager.fragments.find { it.isVisible }?.let {
             onFragmentKeyBackListener?.onBack(it.tag) ?: super.onBackPressed()
         }

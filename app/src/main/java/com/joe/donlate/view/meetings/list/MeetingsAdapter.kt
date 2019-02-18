@@ -10,24 +10,19 @@ import android.widget.CheckBox
 import androidx.core.content.ContextCompat
 import com.joe.donlate.R
 import com.joe.donlate.data.Meeting
+import com.joe.donlate.data.MeetingItemDeleteMode
+import com.joe.donlate.data.MeetingItemNormalMode
 import com.joe.donlate.databinding.ListMeetingItemBinding
 import com.joe.donlate.view.base.BaseHolder
 import com.joe.donlate.view.base.MutableListAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
-sealed class MeetingItemMode
-object MeetingItemNormal : MeetingItemMode()
-object MeetingItemDelete : MeetingItemMode()
 
 class MeetingsAdapter(
     private val meetingClick: (meeting: Meeting) -> Unit,
-    private val meetingLongClick: (view: View) -> Unit
+    private val meetingLongClick: (view: View, position: Int) -> Unit
 ) : MutableListAdapter<Meeting, BaseHolder<Meeting>>() {
-    companion object {
-        var mode: MeetingItemMode = MeetingItemNormal
-    }
-
     override val items: LinkedList<Meeting> = LinkedList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<Meeting> =
@@ -45,26 +40,41 @@ class MeetingsAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun setMode(newMode: MeetingItemMode) {
-        mode = newMode
-        notifyDataSetChanged()
+    fun setAnimation(position: Int) {
+        initMode()
+        setDeleteMode(position)
+    }
+
+    fun initMode() {
+        items.find {
+            it.mode is MeetingItemDeleteMode
+        }?.let {
+            it.mode = MeetingItemNormalMode
+            notifyItemChanged(items.indexOf(it))
+        }
+    }
+
+    private fun setDeleteMode(position: Int) {
+        items[position].mode = MeetingItemDeleteMode
+        notifyItemChanged(position)
     }
 }
 
 class MeetingsHolder(
     private val binding: ListMeetingItemBinding,
     private val meetingClick: (meeting: Meeting) -> Unit,
-    private val longClick: (view: View) -> Unit
+    private val longClick: (view: View, position: Int) -> Unit
 ) : BaseHolder<Meeting>(binding) {
     private val context = itemView.context
     @SuppressLint("SetTextI18n", "SimpleDateFormat", "ClickableViewAccessibility")
     override fun bind(data: Meeting) {
         val time = SimpleDateFormat("hh:mm").format(data.deadLine.toDate())
         val date = SimpleDateFormat("yyyy.MM.dd").format(data.deadLine.toDate())
+
         binding.apply {
             setMeetingTouch(meeting, data)
             setMeetingLongClick(meeting)
-            setLeaveButton(leave, data)
+            setMode(leave, data)
             title.text = data.title
             this.time.text = timeConvert(time)
             penaltyTime.text = "${data.penaltyTime}분"
@@ -93,36 +103,20 @@ class MeetingsHolder(
 
     private fun setMeetingLongClick(view: View) {
         view.setOnLongClickListener {
-            AnimationUtils.loadAnimation(context, R.anim.meeting_delete_mode_anim)
-            longClick(itemView)
+            longClick(itemView, adapterPosition)
             false
         }
     }
 
-    private fun setLeaveButton(view: CheckBox, data: Meeting) {
-        when (MeetingsAdapter.mode) {
-            is MeetingItemNormal -> {
+    private fun setMode(view: CheckBox, data: Meeting) {
+        when (data.mode) {
+            is MeetingItemNormalMode -> {
+                itemView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.meeting_normal_mode_anim))
                 view.visibility = View.INVISIBLE
             }
-            is MeetingItemDelete -> {
+            is MeetingItemDeleteMode -> {
+                itemView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.meeting_delete_mode_anim))
                 view.visibility = View.VISIBLE
-                setLeaveButtonCheckListener(view, data)
-            }
-        }
-    }
-
-    private fun setLeaveButtonCheckListener(view: CheckBox, data: Meeting) {
-        //TODO : 잘 안눌리는거 고칠 것
-        view.setOnCheckedChangeListener { buttonView, isChecked ->
-            buttonView.background = null
-            data.isWaitLeave = !isChecked
-            when (isChecked) {
-                true -> {
-                    buttonView.background = ContextCompat.getDrawable(context, R.drawable.ic_btn_delete_nor_black)
-                }
-                false -> {
-                    buttonView.background = ContextCompat.getDrawable(context, R.drawable.ic_btn_delete_sel)
-                }
             }
         }
     }

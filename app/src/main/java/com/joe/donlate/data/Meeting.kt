@@ -4,6 +4,10 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
 
+sealed class MeetingItemMode
+object MeetingItemNormalMode : MeetingItemMode()
+object MeetingItemDeleteMode : MeetingItemMode()
+
 data class Meeting(
     @Transient val title: String = "",
     @Transient val createAt: Timestamp = Timestamp.now(),
@@ -14,5 +18,5 @@ data class Meeting(
     @Transient val penaltyTime: Int = 0,
     @Transient val penaltyFee: Int = 0,
     @Transient val coordinate: GeoPoint = GeoPoint(0.0, 0.0),
-    var isWaitLeave: Boolean = false
+    var mode: MeetingItemMode = MeetingItemNormalMode
 )

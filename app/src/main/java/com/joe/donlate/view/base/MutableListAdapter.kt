@@ -36,7 +36,7 @@ abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Ada
         //Todo : 필요시 기능추가
     }
 
-    fun set(items: List<T>) {
+    open fun set(items: List<T>) {
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()

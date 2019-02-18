@@ -1,11 +1,15 @@
 package com.joe.donlate.view_model.meetings
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.firestore.DocumentChange
 import com.joe.donlate.data.Address
 import com.joe.donlate.data.Meeting
+import com.joe.donlate.data.MeetingItemMode
+import com.joe.donlate.data.MeetingItemNormalMode
 import com.joe.donlate.model.MeetingsRepository
 import com.joe.donlate.util.CREATE_FAILURE_MESSAGE
 import com.joe.donlate.util.SEARCH_NOT_FOUND
@@ -26,8 +30,9 @@ interface MeetingsInput : Input {
 }
 
 interface MeetingsOutput : Output {
-    val meetings: LiveData<LinkedList<Meeting>>
+    val meetings: LiveData<List<Meeting?>>
     val meetingLongClick: LiveData<Boolean>
+    val meetingMode: LiveData<MeetingItemMode>
 }
 
 interface CreateMeetingInput : Input {
@@ -64,8 +69,9 @@ interface SearchPlaceOutput : Output {
 }
 
 class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewModel() {
-    private val _meetings = MutableLiveData<LinkedList<Meeting>>()
+    private val _meetings = MutableLiveData<List<Meeting?>>()
     private val _meetingLongClick = SingleLiveData<Boolean>()
+    private val _meetingMode = SingleLiveData<MeetingItemMode>()
 
     private val _createMeeting = SingleLiveData<Meeting>()
     private val _startSearchPlaceFragment = SingleLiveData<Any>()
@@ -92,8 +98,9 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     }
 
     val meetingsOutput = object : MeetingsOutput {
-        override val meetings: LiveData<LinkedList<Meeting>> = _meetings
+        override val meetings: LiveData<List<Meeting?>> = _meetings
         override val meetingLongClick: LiveData<Boolean> = _meetingLongClick
+        override val meetingMode: LiveData<MeetingItemMode> = _meetingMode
     }
 
     val createMeetingInput = object : CreateMeetingInput {
@@ -134,6 +141,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
             createMeetingOutput.min, createMeetingOutput.maxParticipants, createMeetingOutput.penaltyTime, createMeetingOutput.penaltyFee)
 
     init {
+        _meetingMode.value = MeetingItemNormalMode
         compositeDisposable.addAll(
             startSearchPlaceFragmentClick.subscribe { _startSearchPlaceFragment.call() },
             createMeetingClick.subscribe { _createMeeting.call() },
@@ -150,13 +158,20 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess { setProgress(false) }
                 .subscribe({
-                    if (!it.isEmpty) {
-                        val rooms = it.toObjects(Meeting::class.java)
-                        val linkedRooms = LinkedList<Meeting>()
-                        linkedRooms.addAll(rooms)
-                        _meetings.value = linkedRooms
-                    } else {
-                        _meetings.value = LinkedList()
+                    it.query.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                        querySnapshot?.let { snapshot ->
+                            snapshot.documents.forEach {
+                                it.data?.forEach { t, u ->
+                                    Log.e("tag", "$t $u")
+                                }
+                            }
+                            _meetings.value = snapshot.documents.map { it.toObject(Meeting::class.java) }
+                        }
+
+                        firebaseFirestoreException?.let { exception ->
+                            exception.printStackTrace()
+                            error("firebaseFirestoreException")
+                        }
                     }
                 }, {
                     it.printStackTrace()
@@ -165,8 +180,21 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
         )
     }
 
-    fun leaveMeetings(vararg urls: String) {
+    fun leaveMeetings(url: String, uuid: String) {
+        setProgress(true)
+        compositeDisposable.add(
+            repository.leaveMeeting(url, uuid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess { setProgress(false) }
+                .doOnError { setProgress(false) }
+                .subscribe({
 
+                }, {
+                    it.printStackTrace()
+                    error("삭제에 실패했습니다.")
+                })
+        )
     }
 
     fun createMeeting(uuid: String, meeting: Meeting) {
@@ -177,7 +205,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess { setProgress(false) }
                 .subscribe({
-                    it.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+                    /*it.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                         documentSnapshot?.let { snapshot ->
                             _meetings.value?.addFirst(snapshot.toObject(Meeting::class.java))
                             _startMeetingsFragment.call()
@@ -186,7 +214,7 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                             exception.printStackTrace()
                             error(SERVER_ERROR_MESSAGE)
                         }
-                    }
+                    }*/
                 }, {
                     it.printStackTrace()
                     error(SERVER_ERROR_MESSAGE)
@@ -220,6 +248,10 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
     fun initCreateMeetingBindingData() {
         createMeetingOutputSet.forEach { it.value = "" }
         _place.value = null
+    }
+
+    fun setMeetingMode(mode: MeetingItemMode) {
+        _meetingMode.value = mode
     }
 }
 

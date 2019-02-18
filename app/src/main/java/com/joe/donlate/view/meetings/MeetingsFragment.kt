@@ -7,26 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.joe.donlate.R
+import com.joe.donlate.data.MeetingItemDeleteMode
+import com.joe.donlate.data.MeetingItemNormalMode
 import com.joe.donlate.databinding.FragmentMeetingsBinding
 import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
 import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meeting_main.MeetingsActivity
-import com.joe.donlate.view.meetings.list.MeetingItemDelete
-import com.joe.donlate.view.meetings.list.MeetingItemMode
-import com.joe.donlate.view.meetings.list.MeetingItemNormal
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view.profile.ProfileSettingActivity
 import com.joe.donlate.view_model.meetings.MeetingsInput
 import com.joe.donlate.view_model.meetings.MeetingsOutput
 import com.joe.donlate.view_model.meetings.MeetingsViewModel
 import kotlinx.android.synthetic.main.fragment_meetings.*
+import kotlinx.android.synthetic.main.list_meeting_item.*
 
 class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>(), OnFragmentKeyBackListener {
     companion object {
@@ -38,15 +37,17 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
             //touch
             Log.e("tag", "touch")
         },
-        {
-            setMeetingsAdapterMode(MeetingItemDelete)
+        { _, position ->
+            setAnim(position)
+            activityViewModel.setMeetingMode(MeetingItemDeleteMode)
         })
     override var layoutResource: Int = R.layout.fragment_meetings
     private lateinit var activityViewModel: MeetingsViewModel
     private lateinit var activityViewModelOutput: MeetingsOutput
     private lateinit var activityViewModelInput: MeetingsInput
-    private val deleteModeAnimation by lazy {
-        AnimationUtils.loadAnimation(activity, R.anim.meeting_delete_mode_anim)
+
+    private fun setAnim(position: Int) {
+        meetingsAdapter.setAnimation(position)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,11 +81,10 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
                 .commit()
         }
 
-        leave.setOnClickListener { _ ->
-            meetingsAdapter.items.filter { it.isWaitLeave }
-                .forEach {
-                    Log.e("tag", it.title)
-                }
+        viewDataBinding.leave.setOnClickListener { _ ->
+            meetingsAdapter.items.find { it.mode is MeetingItemDeleteMode }?.let {
+                activityViewModel.leaveMeetings(it.url, UuidUtil.getUuid(activity))
+            }
         }
     }
 
@@ -104,9 +104,11 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     }
 
     private fun meetingsObserve() {
-        activityViewModelOutput.meetings.observe(this, Observer {
-            list.adapter = meetingsAdapter
-            meetingsAdapter.set(it)
+        activityViewModelOutput.meetings.observe(this, Observer { data ->
+            if (list.adapter == null)
+                list.adapter = meetingsAdapter
+            meetingsAdapter.set(data.filterNotNull())
+            activityViewModel.setMeetingMode(MeetingItemNormalMode)
         })
     }
 
@@ -116,21 +118,10 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
         })
     }
 
-    private fun setMeetingsAdapterMode(mode: MeetingItemMode) {
-        when (mode) {
-            is MeetingItemNormal -> {
-
-            }
-            is MeetingItemDelete -> {
-                list.startAnimation(deleteModeAnimation)
-                meetingAdd.visibility = View.GONE
-                leave.visibility = View.VISIBLE
-            }
-        }
-        meetingsAdapter.setMode(mode)
-    }
-
     override fun onBack(stackName: String?) {
-        activity.supportFragmentManager.popBackStackImmediate(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        meetingsAdapter.items.find { it.mode is MeetingItemDeleteMode }?.let {
+            meetingsAdapter.initMode()
+            activityViewModel.setMeetingMode(MeetingItemNormalMode)
+        } ?: activity.finish()
     }
 }

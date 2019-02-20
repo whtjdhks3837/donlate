@@ -21,7 +21,7 @@ import java.util.*
 
 
 class MeetingsAdapter(
-    private val meetingClick: (meeting: Meeting) -> Unit,
+    private val meetingClick: (url: String) -> Unit,
     private val meetingLongClick: (view: View, position: Int) -> Unit
 ) : MutableListAdapter<Meeting, BaseHolder<Meeting>>() {
     override val items: LinkedList<Meeting> = LinkedList()
@@ -63,7 +63,7 @@ class MeetingsAdapter(
 
 class MeetingsHolder(
     private val binding: ListMeetingItemBinding,
-    private val meetingClick: (meeting: Meeting) -> Unit,
+    private val meetingClick: (url: String) -> Unit,
     private val longClick: (view: View, position: Int) -> Unit
 ) : BaseHolder<Meeting>(binding) {
     private val context = itemView.context
@@ -96,7 +96,7 @@ class MeetingsHolder(
                 event.action == MotionEvent.ACTION_UP -> {
                     v.background =
                             ContextCompat.getDrawable(context, R.drawable.meeting_item_background)
-                    meetingClick(data)
+                    meetingClick(data.url)
                 }
             }
             false

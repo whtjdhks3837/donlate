@@ -1,4 +1,4 @@
-package com.joe.donlate.view.search_place.list
+package com.joe.donlate.view.searchplace.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

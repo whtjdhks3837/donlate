@@ -35,7 +35,7 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
     private val meetingsAdapter = MeetingsAdapter(
         {
             val intent = Intent(activity, MeetingDetailActivity::class.java)
-            intent.putExtra("meeting", it)
+            intent.putExtra("url", it)
             startActivity(intent)
         },
         { _, position ->

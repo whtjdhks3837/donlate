@@ -16,6 +16,10 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:name=".DonLateApplication">
+        <meta-data
+                android:name="com.naver.maps.map.CLIENT_ID"
+                android:value="d80t9zxg3o" />
+        
         <activity android:name=".view.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -26,7 +30,9 @@
         </activity>
         <activity android:name=".view.profile.ProfileSettingActivity">
         </activity>
-        <activity android:name=".view.meeting_main.MeetingsActivity">
+        <activity android:name=".view.meetings_main.MeetingsActivity">
+        </activity>
+        <activity android:name=".view.meetingdetail.MeetingDetailActivity">
         </activity>
         <uses-library android:name="android.test.base"
                       android:required="false" />

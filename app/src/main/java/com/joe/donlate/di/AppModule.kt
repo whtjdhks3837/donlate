@@ -4,9 +4,9 @@ import com.joe.donlate.api.NaverMapService
 import com.joe.donlate.api.RetrofitService
 import com.joe.donlate.model.*
 import com.joe.donlate.util.NAVER_API_URL
-import com.joe.donlate.view_model.meetings.MeetingsViewModelFactory
-import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
-import com.joe.donlate.view_model.splash.SplashViewModelFactory
+import com.joe.donlate.viewmodel.meetings.MeetingsViewModelFactory
+import com.joe.donlate.viewmodel.profile.ProfileSettingViewModelFactory
+import com.joe.donlate.viewmodel.splash.SplashViewModelFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

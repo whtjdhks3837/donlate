@@ -1,28 +1,24 @@
-package com.joe.donlate.view_model.meetings
+package com.joe.donlate.viewmodel.meetings
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.firestore.DocumentChange
 import com.joe.donlate.data.Address
 import com.joe.donlate.data.Meeting
 import com.joe.donlate.data.MeetingItemMode
 import com.joe.donlate.data.MeetingItemNormalMode
 import com.joe.donlate.model.MeetingsRepository
-import com.joe.donlate.util.CREATE_FAILURE_MESSAGE
 import com.joe.donlate.util.SEARCH_NOT_FOUND
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.util.SingleLiveData
-import com.joe.donlate.view_model.BaseViewModel
-import com.joe.donlate.view_model.CLICK
-import com.joe.donlate.view_model.Input
-import com.joe.donlate.view_model.Output
+import com.joe.donlate.viewmodel.BaseViewModel
+import com.joe.donlate.viewmodel.CLICK
+import com.joe.donlate.viewmodel.Input
+import com.joe.donlate.viewmodel.Output
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import java.util.*
 
 interface MeetingsInput : Input {
     fun meetingClick()
@@ -158,13 +154,9 @@ class MeetingsViewModel(private val repository: MeetingsRepository) : BaseViewMo
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess { setProgress(false) }
                 .subscribe({
+                    //TODO : 리스트 갱신 성능 개선
                     it.query.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                         querySnapshot?.let { snapshot ->
-                            snapshot.documents.forEach {
-                                it.data?.forEach { t, u ->
-                                    Log.e("tag", "$t $u")
-                                }
-                            }
                             _meetings.value = snapshot.documents.map { it.toObject(Meeting::class.java) }
                         }
 

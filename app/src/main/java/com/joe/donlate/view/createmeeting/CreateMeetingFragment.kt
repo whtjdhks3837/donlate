@@ -1,4 +1,4 @@
-package com.joe.donlate.view.create_meeting
+package com.joe.donlate.view.createmeeting
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,11 +17,11 @@ import com.joe.donlate.databinding.FragmentCreateMeetingBinding
 import com.joe.donlate.util.*
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
-import com.joe.donlate.view.meeting_main.MeetingsActivity
-import com.joe.donlate.view.search_place.SearchPlaceFragment
-import com.joe.donlate.view_model.meetings.CreateMeetingInput
-import com.joe.donlate.view_model.meetings.CreateMeetingOutput
-import com.joe.donlate.view_model.meetings.MeetingsViewModel
+import com.joe.donlate.view.meetings_main.MeetingsActivity
+import com.joe.donlate.view.searchplace.SearchPlaceFragment
+import com.joe.donlate.viewmodel.meetings.CreateMeetingInput
+import com.joe.donlate.viewmodel.meetings.CreateMeetingOutput
+import com.joe.donlate.viewmodel.meetings.MeetingsViewModel
 import kotlinx.android.synthetic.main.fragment_create_meeting.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -118,7 +118,7 @@ class CreateMeetingFragment : BaseFragment<MeetingsActivity, FragmentCreateMeeti
             null
         }
 
-    private fun makeUrl() = "testurl"
+    private fun makeUrl() = "${System.currentTimeMillis()}${UuidUtil.getUuid(activity)}"
 
     private fun startMeetingsFragmentSubscribe() {
         activityViewModelOutput.startMeetingsFragment.observe(viewLifecycleOwner, Observer {

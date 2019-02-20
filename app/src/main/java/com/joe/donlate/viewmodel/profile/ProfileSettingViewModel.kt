@@ -1,4 +1,4 @@
-package com.joe.donlate.view_model.profile
+package com.joe.donlate.viewmodel.profile
 
 import android.graphics.Bitmap
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.joe.donlate.model.ProfileSettingRepository
 import com.joe.donlate.util.*
-import com.joe.donlate.view_model.BaseViewModel
+import com.joe.donlate.viewmodel.BaseViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

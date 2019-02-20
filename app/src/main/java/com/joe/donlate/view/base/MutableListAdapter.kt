@@ -11,11 +11,6 @@ abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Ada
         notifyItemInserted(position)
     }
 
-    fun addFirst(item: T) {
-        items.addFirst(item)
-        notifyItemInserted(0)
-    }
-
     open fun remove(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
@@ -27,13 +22,9 @@ abstract class MutableListAdapter<T : Any, R : BaseHolder<T>> : RecyclerView.Ada
         notifyItemRangeInserted(preSize, this.items.size)
     }
 
-    open fun preAdd(items: List<T>) {
-        this.items.addAll(0, items)
-        notifyDataSetChanged()
-    }
-
     fun remove(items: List<T>) {
-        //Todo : 필요시 기능추가
+        this.items.removeAll(items)
+        notifyDataSetChanged()
     }
 
     open fun set(items: List<T>) {

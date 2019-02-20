@@ -8,7 +8,7 @@
 
         <variable
                 name="viewModel"
-                type="com.joe.donlate.view_model.meetings.MeetingsViewModel"/>
+                type="com.joe.donlate.viewmodel.meetings.MeetingsViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

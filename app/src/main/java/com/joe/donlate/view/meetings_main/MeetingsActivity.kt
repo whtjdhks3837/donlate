@@ -1,9 +1,8 @@
-package com.joe.donlate.view.meeting_main
+package com.joe.donlate.view.meetings_main
 
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.joe.donlate.R
@@ -11,11 +10,9 @@ import com.joe.donlate.databinding.ActivityMeetingsBinding
 import com.joe.donlate.util.showToast
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseActivity
-import com.joe.donlate.view.create_meeting.CreateMeetingFragment
 import com.joe.donlate.view.meetings.MeetingsFragment
-import com.joe.donlate.view.search_place.SearchPlaceFragment
-import com.joe.donlate.view_model.meetings.MeetingsViewModel
-import com.joe.donlate.view_model.meetings.MeetingsViewModelFactory
+import com.joe.donlate.viewmodel.meetings.MeetingsViewModel
+import com.joe.donlate.viewmodel.meetings.MeetingsViewModelFactory
 import org.koin.android.ext.android.inject
 
 class MeetingsActivity : BaseActivity<ActivityMeetingsBinding>() {

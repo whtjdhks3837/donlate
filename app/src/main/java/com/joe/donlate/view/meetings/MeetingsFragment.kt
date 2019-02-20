@@ -17,15 +17,15 @@ import com.joe.donlate.databinding.FragmentMeetingsBinding
 import com.joe.donlate.util.UuidUtil
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
-import com.joe.donlate.view.create_meeting.CreateMeetingFragment
-import com.joe.donlate.view.meeting_main.MeetingsActivity
+import com.joe.donlate.view.createmeeting.CreateMeetingFragment
+import com.joe.donlate.view.meetingdetail.MeetingDetailActivity
+import com.joe.donlate.view.meetings_main.MeetingsActivity
 import com.joe.donlate.view.meetings.list.MeetingsAdapter
 import com.joe.donlate.view.profile.ProfileSettingActivity
-import com.joe.donlate.view_model.meetings.MeetingsInput
-import com.joe.donlate.view_model.meetings.MeetingsOutput
-import com.joe.donlate.view_model.meetings.MeetingsViewModel
+import com.joe.donlate.viewmodel.meetings.MeetingsInput
+import com.joe.donlate.viewmodel.meetings.MeetingsOutput
+import com.joe.donlate.viewmodel.meetings.MeetingsViewModel
 import kotlinx.android.synthetic.main.fragment_meetings.*
-import kotlinx.android.synthetic.main.list_meeting_item.*
 
 class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>(), OnFragmentKeyBackListener {
     companion object {
@@ -34,8 +34,9 @@ class MeetingsFragment : BaseFragment<MeetingsActivity, FragmentMeetingsBinding>
 
     private val meetingsAdapter = MeetingsAdapter(
         {
-            //touch
-            Log.e("tag", "touch")
+            val intent = Intent(activity, MeetingDetailActivity::class.java)
+            intent.putExtra("meeting", it)
+            startActivity(intent)
         },
         { _, position ->
             setAnim(position)

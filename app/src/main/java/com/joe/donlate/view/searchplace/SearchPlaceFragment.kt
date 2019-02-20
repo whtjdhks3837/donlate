@@ -1,4 +1,4 @@
-package com.joe.donlate.view.search_place
+package com.joe.donlate.view.searchplace
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,11 +14,11 @@ import com.joe.donlate.databinding.FragmentSearchPlaceBinding
 import com.joe.donlate.util.showToast
 import com.joe.donlate.view.OnFragmentKeyBackListener
 import com.joe.donlate.view.base.BaseFragment
-import com.joe.donlate.view.meeting_main.MeetingsActivity
-import com.joe.donlate.view.search_place.list.AddressesAdapter
-import com.joe.donlate.view_model.meetings.MeetingsViewModel
-import com.joe.donlate.view_model.meetings.SearchPlaceInput
-import com.joe.donlate.view_model.meetings.SearchPlaceOutput
+import com.joe.donlate.view.meetings_main.MeetingsActivity
+import com.joe.donlate.view.searchplace.list.AddressesAdapter
+import com.joe.donlate.viewmodel.meetings.MeetingsViewModel
+import com.joe.donlate.viewmodel.meetings.SearchPlaceInput
+import com.joe.donlate.viewmodel.meetings.SearchPlaceOutput
 
 class SearchPlaceFragment : BaseFragment<MeetingsActivity, FragmentSearchPlaceBinding>(), OnFragmentKeyBackListener {
     companion object {

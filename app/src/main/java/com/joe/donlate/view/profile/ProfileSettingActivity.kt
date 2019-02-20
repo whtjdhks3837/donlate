@@ -9,9 +9,9 @@ import com.joe.donlate.R
 import com.joe.donlate.databinding.ActivityProfileSettingBinding
 import com.joe.donlate.util.*
 import com.joe.donlate.view.base.BaseActivity
-import com.joe.donlate.view.meeting_main.MeetingsActivity
-import com.joe.donlate.view_model.profile.ProfileSettingViewModel
-import com.joe.donlate.view_model.profile.ProfileSettingViewModelFactory
+import com.joe.donlate.view.meetings_main.MeetingsActivity
+import com.joe.donlate.viewmodel.profile.ProfileSettingViewModel
+import com.joe.donlate.viewmodel.profile.ProfileSettingViewModelFactory
 import org.koin.android.ext.android.inject
 
 class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {

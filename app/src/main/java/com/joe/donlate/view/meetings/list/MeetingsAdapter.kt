@@ -1,6 +1,7 @@
 package com.joe.donlate.view.meetings.list
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -71,6 +72,7 @@ class MeetingsHolder(
         val time = SimpleDateFormat("hh:mm").format(data.deadLine.toDate())
         val date = SimpleDateFormat("yyyy.MM.dd").format(data.deadLine.toDate())
 
+        Log.e("tag", "binding $adapterPosition")
         binding.apply {
             setMeetingTouch(meeting, data)
             setMeetingLongClick(meeting)

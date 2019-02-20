@@ -1,4 +1,4 @@
-package com.joe.donlate.view_model.splash
+package com.joe.donlate.viewmodel.splash
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.joe.donlate.model.SplashRepository
 import com.joe.donlate.util.SERVER_ERROR_MESSAGE
 import com.joe.donlate.util.SingleLiveData
-import com.joe.donlate.view_model.BaseViewModel
+import com.joe.donlate.viewmodel.BaseViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

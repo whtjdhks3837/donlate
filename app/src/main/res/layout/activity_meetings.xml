@@ -3,7 +3,7 @@
     <data>
         <variable
                 name="viewModel"
-                type="com.joe.donlate.view_model.meetings.MeetingsViewModel"/>
+                type="com.joe.donlate.viewmodel.meetings.MeetingsViewModel"/>
         <import type="android.view.View"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout

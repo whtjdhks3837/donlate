@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
-import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -25,6 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 const val FIRESTORAGE_URL = "gs://donlate-66efb.appspot.com/"
 val firebaseAuth = FirebaseAuth.getInstance()
@@ -92,4 +93,14 @@ object GlideUtil {
             .apply(RequestOptions().circleCrop())
             .into(imageView)
     }
+}
+
+object DateUtil {
+    private val yearMonthDayFormat = SimpleDateFormat("yyyy.MM.dd", Locale.KOREA)
+    fun from(date: Date): String = yearMonthDayFormat.format(date)
+}
+
+object TimeUtil {
+    private var hourMinFormat = SimpleDateFormat("hh:mm", Locale.KOREA)
+    fun from(date: Date): String = hourMinFormat.format(date)
 }

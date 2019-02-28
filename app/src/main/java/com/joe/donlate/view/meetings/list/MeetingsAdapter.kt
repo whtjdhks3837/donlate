@@ -14,6 +14,8 @@ import com.joe.donlate.data.Meeting
 import com.joe.donlate.data.MeetingItemDeleteMode
 import com.joe.donlate.data.MeetingItemNormalMode
 import com.joe.donlate.databinding.ListMeetingItemBinding
+import com.joe.donlate.util.DateUtil
+import com.joe.donlate.util.TimeUtil
 import com.joe.donlate.view.base.BaseHolder
 import com.joe.donlate.view.base.MutableListAdapter
 import java.text.SimpleDateFormat
@@ -69,10 +71,9 @@ class MeetingsHolder(
     private val context = itemView.context
     @SuppressLint("SetTextI18n", "SimpleDateFormat", "ClickableViewAccessibility")
     override fun bind(data: Meeting) {
-        val time = SimpleDateFormat("hh:mm").format(data.deadLine.toDate())
-        val date = SimpleDateFormat("yyyy.MM.dd").format(data.deadLine.toDate())
+        val time = TimeUtil.from(data.deadLine.toDate())
+        val date = DateUtil.from(data.deadLine.toDate())
 
-        Log.e("tag", "binding $adapterPosition")
         binding.apply {
             setMeetingTouch(meeting, data)
             setMeetingLongClick(meeting)

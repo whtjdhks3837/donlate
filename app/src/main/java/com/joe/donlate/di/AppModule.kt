@@ -4,6 +4,7 @@ import com.joe.donlate.api.NaverMapService
 import com.joe.donlate.api.RetrofitService
 import com.joe.donlate.model.*
 import com.joe.donlate.util.NAVER_API_URL
+import com.joe.donlate.viewmodel.meetingdetail.MeetingDetailViewModelFactory
 import com.joe.donlate.viewmodel.meetings.MeetingsViewModelFactory
 import com.joe.donlate.viewmodel.profile.ProfileSettingViewModelFactory
 import com.joe.donlate.viewmodel.splash.SplashViewModelFactory
@@ -82,4 +83,16 @@ val meetingsModule = module {
     }
 }
 
-val appModule = listOf(apiModule, splashModule, profileSettingModule, meetingsModule)
+val meetingDetailModule = module {
+    factory("meetingDetailRepository") {
+        MeetingDetailRepositoryImpl() as MeetingDetailRepository
+    }
+
+    factory("meetingDetailViewModelFactory") {
+        MeetingDetailViewModelFactory(get("meetingDetailRepository"))
+    }
+}
+
+val appModule = listOf(
+    apiModule, splashModule, profileSettingModule,
+    meetingsModule, meetingDetailModule)

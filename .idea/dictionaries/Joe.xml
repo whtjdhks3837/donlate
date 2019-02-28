@@ -2,9 +2,6 @@
   <dictionary name="Joe">
     <words>
       <w>firebase</w>
-      <w>firestore</w>
-      <w>greyish</w>
-      <w>naver</w>
     </words>
   </dictionary>
 </component>

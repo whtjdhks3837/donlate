@@ -84,7 +84,7 @@ object BitmapUtil {
 }
 
 object GlideUtil {
-    fun loadFirebaseStorage(context: Context, imageView: ImageView) {
+    fun loadImageFromFirebaseStorage(context: Context, imageView: ImageView) {
         val storageReference =
             firebaseStorage.getReferenceFromUrl("${FIRESTORAGE_URL}/images/${UuidUtil.getUuid(context)}.jpg")
         GlideApp.with(context)

@@ -94,7 +94,7 @@ class ProfileSettingActivity : BaseActivity<ActivityProfileSettingBinding>() {
     private fun userObserve() {
         viewModel.user.observe(this, Observer {
             viewDataBinding.nameEdit.setText(it["name"].toString())
-            GlideUtil.loadFirebaseStorage(this, viewDataBinding.profileImage)
+            GlideUtil.loadImageFromFirebaseStorage(this, viewDataBinding.profileImage)
         })
     }
 
